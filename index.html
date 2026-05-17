@@ -8,30 +8,20 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#F4EFE4;
-  --card:#FFFFFF;
-  --sb:#141414;
-  --yellow:#E9D94C;
-  --yellow-t:rgba(233,217,76,.18);
-  --pink:#F2B8C6;
-  --pink-t:rgba(242,184,198,.2);
-  --olive:#A8C46A;
-  --olive-t:rgba(168,196,106,.18);
-  --blue:#B8CCF0;
-  --blue-t:rgba(184,204,240,.2);
-  --teal:#4ECDC4;
-  --teal-t:rgba(78,205,196,.15);
-  --text:#1A1A1A;
-  --muted:#8A8A8A;
-  --border:#E2D9CA;
-  --mono:'DM Mono',monospace;
-  --sans:'Plus Jakarta Sans',sans-serif;
+  --bg:#F4EFE4;--card:#FFFFFF;--sb:#141414;
+  --yellow:#E9D94C;--yellow-t:rgba(233,217,76,.18);
+  --pink:#F2B8C6;--pink-t:rgba(242,184,198,.2);
+  --olive:#A8C46A;--olive-t:rgba(168,196,106,.18);
+  --blue:#B8CCF0;--blue-t:rgba(184,204,240,.2);
+  --teal:#4ECDC4;--teal-t:rgba(78,205,196,.15);
+  --text:#1A1A1A;--muted:#8A8A8A;--border:#E2D9CA;
+  --mono:'DM Mono',monospace;--sans:'Plus Jakarta Sans',sans-serif;
 }
 *{font-family:var(--sans)}
 body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .app{display:grid;grid-template-columns:230px 1fr 290px;min-height:100vh}
 
-/* ── SIDEBAR ── */
+/* SIDEBAR */
 .sidebar{background:var(--sb);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
 .logo{padding:22px 20px 20px;border-bottom:1px solid rgba(255,255,255,.07)}
 .logo-name{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.04em}
@@ -52,7 +42,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .crow:last-child{margin-bottom:0}
 .cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 
-/* ── MAIN ── */
+/* MAIN */
 .main{display:flex;flex-direction:column;padding:26px 22px;min-height:100vh}
 .view{display:none}.view.active{display:flex;flex-direction:column;gap:14px}
 
@@ -119,8 +109,6 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .wcard-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .wcard-title{font-size:13px;font-weight:700;letter-spacing:-.01em}
 .wcard-tag{font-size:9px;font-weight:600;color:var(--muted);background:var(--bg);padding:3px 10px;border-radius:20px}
-
-/* Post list (patient list style) */
 .post-item{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--border)}
 .post-item:last-child{border-bottom:none}
 .picon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
@@ -134,8 +122,6 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .ptag{font-size:9px;font-family:var(--mono);color:var(--muted);background:var(--bg);padding:3px 8px;border-radius:20px;font-weight:500;white-space:nowrap}
 .pbar{height:3px;width:48px;background:var(--border);border-radius:2px;margin-top:5px;margin-left:auto}
 .pfill{height:100%;border-radius:2px;background:var(--olive)}
-
-/* Detail card (visit detail style) */
 .detail-card{background:var(--pink);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px}
 .dc-name{font-size:16px;font-weight:800;letter-spacing:-.03em}
 .dc-meta{font-size:11px;opacity:.55;font-weight:500}
@@ -145,43 +131,35 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .dc-row{display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:start;font-size:11px}
 .dc-key{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;opacity:.45;padding-top:1px}
 .dc-val{font-weight:500;opacity:.8;line-height:1.45}
-.dc-link{font-weight:700;border-bottom:1px solid rgba(0,0,0,.3);color:inherit;text-decoration:none}
 .dc-divider{height:1px;background:rgba(0,0,0,.08)}
 .dc-btn{background:rgba(0,0,0,.85);color:#fff;border:none;border-radius:12px;padding:10px;font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:opacity .13s}
 .dc-btn:hover{opacity:.8}
 
-/* ── RIGHT PANEL ── */
+/* RIGHT PANEL */
 .rpanel{background:var(--bg);border-left:1.5px solid var(--border);padding:26px 18px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow-y:auto}
-.rp-icons{display:flex;gap:6px;margin-left:auto}
-.rp-icon{width:32px;height:32px;background:#fff;border:1.5px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer}
-
-/* Mini calendar */
-.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.cal-month{font-size:13px;font-weight:700;letter-spacing:-.02em}
-.cal-navs{display:flex;gap:4px}
+.cal-head{display:flex;align-items:center;justify-content:space-between}
+.cal-navs{display:flex;gap:4px;align-items:center}
 .cal-nb{width:26px;height:26px;background:#fff;border:1.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--muted);transition:all .12s}
 .cal-nb:hover{border-color:var(--text);color:var(--text)}
+.cal-month-label{font-size:12px;font-weight:700;margin:0 6px}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .cal-dh{font-size:8px;font-weight:700;color:var(--muted);text-align:center;padding:4px 0;text-transform:uppercase;letter-spacing:.05em}
 .cal-d{height:30px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border-radius:8px;cursor:pointer;color:var(--muted);transition:all .12s}
 .cal-d:hover{background:#fff;color:var(--text)}
 .cal-d.cur{color:var(--text);font-weight:600}
 .cal-d.today{background:var(--pink);color:#fff;font-weight:700}
-.cal-d.posted{color:var(--text);font-weight:700}
+.cal-d.posted{color:var(--text);font-weight:700;position:relative}
 .cal-d.posted::after{content:'';display:block;width:4px;height:4px;border-radius:50%;background:var(--olive);position:absolute;margin-top:18px}
-.cal-d.posted{position:relative}
 .cal-d.sched{background:var(--yellow-t);color:#5a4800;font-weight:700}
 .rp-add{background:var(--text);color:#fff;border:none;border-radius:12px;padding:10px;font-size:12px;font-weight:600;cursor:pointer;width:100%;transition:opacity .13s}
 .rp-add:hover{opacity:.82}
 .rp-row2{display:flex;gap:6px}
 .rp-icon-btn{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
 .rp-icon-btn:hover{border-color:var(--text)}
-
-/* Timeline */
 .tl-head{display:flex;align-items:center;justify-content:space-between}
 .tl-date{font-size:14px;font-weight:800;letter-spacing:-.02em}
-.tl-filter{font-size:9px;font-weight:700;background:var(--text);color:#fff;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:4px;cursor:pointer}
-.tl-label{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:10px 0 6px}
+.tl-filter{font-size:9px;font-weight:700;background:var(--text);color:#fff;padding:4px 10px;border-radius:20px;cursor:pointer}
+.tl-label{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:0 0 6px}
 .tl-item{display:flex;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);align-items:flex-start}
 .tl-item:last-child{border-bottom:none}
 .tl-time{font-size:9px;font-family:var(--mono);color:var(--muted);width:30px;flex-shrink:0;padding-top:4px;font-weight:500;line-height:1.2}
@@ -193,14 +171,13 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .tl-info{flex:1;min-width:0}
 .tl-title{font-size:11px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:1px}
 .tl-sub{font-size:9px;color:var(--muted);font-weight:500}
-.tl-view{background:var(--text);color:#fff;border:none;border-radius:10px;padding:9px;font-size:11px;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
+.tl-view{background:var(--text);color:#fff;border:none;border-radius:10px;padding:9px;font-size:11px;font-weight:600;cursor:pointer;width:100%}
 
-/* ── PILLS ── */
+/* PILLS */
 .pill{font-size:8px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px;font-weight:600}
 .pill.obs{background:var(--yellow-t);color:#5a4800}
 .pill.find{background:var(--teal-t);color:#006560}
 .pill.exp{background:var(--pink-t);color:#6B1030}
-.pill.sched{background:var(--olive-t);color:#2a4a00}
 .spill{display:inline-flex;align-items:center;font-size:8px;font-family:var(--mono);padding:2px 7px;border-radius:20px;letter-spacing:.05em;font-weight:600}
 .spill.obs{background:var(--yellow-t);color:#5a4800}
 .spill.find{background:var(--teal-t);color:#006560}
@@ -212,24 +189,21 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .status-pill.inbox{background:rgba(0,0,0,.06);color:var(--muted)}
 .status-pill.exploring{background:var(--teal-t);color:#006560}
 .status-pill.repurpose{background:var(--pink-t);color:#6B1030}
+.status-pill.ready{background:var(--olive-t);color:#2a4a00}
 
-/* ── NON-DASHBOARD VIEWS ── */
-.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+/* NON-DASHBOARD */
+.sh{display:flex;align-items:center;justify-content:space-between}
 .sh-title{font-size:20px;font-weight:800;letter-spacing:-.03em}
 .sh-sub{font-size:11px;color:var(--muted);font-weight:500;margin-top:2px}
-
-/* Inbox */
-.capture-bar{display:flex;gap:7px}
 .fi{width:100%;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:9px 13px;color:var(--text);font-size:12px;outline:none;transition:border-color .14s;font-weight:500}
 .fi:focus{border-color:var(--text)}
 .fsel{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:8px 12px;color:var(--text);font-size:11px;outline:none;cursor:pointer;font-weight:500}
+.capture-bar{display:flex;gap:7px}
 .db-table{width:100%;border-collapse:collapse;background:#fff;border-radius:18px;overflow:hidden}
 .db-table th{font-size:9px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.07em;text-align:left;padding:10px 13px;border-bottom:1.5px solid var(--border);font-weight:500}
 .db-table td{padding:10px 13px;border-bottom:1px solid var(--border);vertical-align:middle}
 .db-table tr:last-child td{border-bottom:none}
 .db-table tbody tr:hover td{background:var(--bg)}
-
-/* Kanban */
 .kanban{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;overflow-x:auto}
 .kcol{background:#fff;border-radius:16px;padding:11px;min-width:125px}
 .kcol-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
@@ -244,28 +218,23 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .kcard-date{font-size:9px;color:var(--muted);margin-left:auto;font-family:var(--mono)}
 .kcard.scheduled{border-color:rgba(233,217,76,.5);background:rgba(233,217,76,.07)}
 .kcard.repurpose{border-color:rgba(242,184,198,.5);background:rgba(242,184,198,.07)}
-
-/* Calendar view */
 .cal-view-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .cv-dh{font-size:9px;font-weight:600;color:var(--muted);text-align:center;padding:5px 0;text-transform:uppercase;letter-spacing:.05em}
 .cv-d{background:#fff;border-radius:12px;padding:7px;min-height:80px;cursor:pointer;transition:border .12s;border:1.5px solid transparent}
 .cv-d:hover{border-color:var(--border)}
 .cv-d.today{border-color:var(--pink);background:rgba(242,184,198,.06)}
+.cv-d.empty{opacity:0;pointer-events:none}
 .cv-num{font-size:9px;font-family:var(--mono);color:var(--muted);margin-bottom:5px;font-weight:500}
 .cv-post{font-size:9px;padding:3px 5px;border-radius:6px;margin-bottom:3px;line-height:1.3;font-weight:600}
 .cv-post.obs{background:var(--yellow-t);color:#5a4800}
 .cv-post.find{background:var(--blue-t);color:#1a2a5a}
 .cv-post.exp{background:var(--pink-t);color:#5a1a28}
 .cv-post.sched{background:var(--olive-t);color:#2a4a00}
-
-/* Experiment lab */
 .exp-card{background:#fff;border-radius:16px;padding:16px;display:grid;grid-template-columns:1fr auto;gap:12px;cursor:pointer;transition:all .12s;border:1.5px solid transparent}
 .exp-card:hover{border-color:var(--border)}
 .exp-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-.01em}
 .exp-meta{font-size:11px;color:var(--muted);line-height:1.5;font-weight:500}
 .exp-note{font-size:10px;font-family:var(--mono);margin-top:7px;font-weight:500}
-
-/* Draft studio */
 .draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .ai-panel{background:#fff;border-radius:18px;overflow:hidden}
 .ai-ph{padding:14px 18px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
@@ -279,11 +248,8 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
 .draft-hook{font-weight:800;font-size:13px;display:block;margin-bottom:8px;letter-spacing:-.02em}
 .ld{display:inline-flex;gap:5px;align-items:center}
 .ldd{width:6px;height:6px;border-radius:50%;background:var(--text);animation:pulse 1.2s ease-in-out infinite}
-.ldd:nth-child(2){animation-delay:.2s}
-.ldd:nth-child(3){animation-delay:.4s}
+.ldd:nth-child(2){animation-delay:.2s}.ldd:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
-
-/* Playbook */
 .rules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .rule-card{background:#fff;border-radius:16px;padding:16px}
 .rule-type{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:11px;padding:3px 10px;border-radius:20px;display:inline-block}
@@ -292,11 +258,8 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
 .voice-panel{background:#fff;border-radius:18px;padding:18px}
 .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .vtag{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;margin:0 4px 5px 0;display:inline-block}
-
-/* Library */
 .prio{display:flex;gap:3px}
 .pd{width:5px;height:5px;border-radius:50%}
-
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
@@ -304,51 +267,353 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
 </head>
 <body>
 <div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div id="view-dashboard" class="view active"></div>
+    <div id="view-inbox"     class="view"></div>
+    <div id="view-pipeline"  class="view"></div>
+    <div id="view-calendar"  class="view"></div>
+    <div id="view-lab"       class="view"></div>
+    <div id="view-library"   class="view"></div>
+    <div id="view-draft"     class="view"></div>
+    <div id="view-playbook"  class="view"></div>
+  </main>
+  <aside class="rpanel" id="rpanel"></aside>
+</div>
 
-<!-- ════ SIDEBAR ════ -->
-<aside class="sidebar">
-  <div class="logo">
-    <div class="logo-name">Brand<span class="logo-dot">.</span>OS</div>
-    <div class="logo-sub">Strategic Designer · Builder<br/>AI Explorer</div>
-  </div>
-  <nav class="nav">
-    <div class="nl">Views</div>
-    <div class="ni active" onclick="go('dashboard',this)"><span class="ni-icon">⬡</span>Dashboard</div>
-    <div class="ni" onclick="go('inbox',this)"><span class="ni-icon">✦</span>Inbox<span class="nb">4</span></div>
-    <div class="ni" onclick="go('pipeline',this)"><span class="ni-icon">◈</span>Editorial Pipeline</div>
-    <div class="ni" onclick="go('calendar',this)"><span class="ni-icon">◻</span>Content Calendar</div>
-    <div class="ni" onclick="go('lab',this)"><span class="ni-icon">◎</span>Experiment Lab<span class="nb">3</span></div>
-    <div class="ni" onclick="go('library',this)"><span class="ni-icon">◑</span>Posted Library<span class="nb nb-g">12</span></div>
-    <div class="nl">Tools</div>
-    <div class="ni" onclick="go('draft',this)"><span class="ni-icon">✐</span>AI Draft Studio</div>
-    <div class="ni" onclick="go('playbook',this)"><span class="ni-icon">◧</span>Writing Playbook</div>
-  </nav>
-  <div class="sfooter">
-    <div class="ccard">
-      <div class="ctitle">Weekly Cadence</div>
-      <div class="crow"><span class="cdot" style="background:#E9D94C"></span>Mon → Observation</div>
-      <div class="crow"><span class="cdot" style="background:#B8CCF0"></span>Thu → Cool Find</div>
-      <div class="crow"><span class="cdot" style="background:#F2B8C6"></span>Sat/2w → Experiment</div>
+<script>
+/* ═══════════════════════════════
+   DATA — edit here to update everything
+═══════════════════════════════ */
+const DATA = {
+  user: {
+    name: 'Anand',
+    tagline: 'Strategic Designer · Builder\nAI Explorer'
+  },
+  stats: {
+    published: 27,
+    publishedDelta: '+6 this month',
+    streakCurrent: '6w',
+    streakBest: '8w',
+    streakPostsThisMonth: 17
+  },
+  pillarMix: [
+    { label: 'Observation', count: 16 },
+    { label: 'Cool Find',   count: 9  },
+    { label: 'Experiment',  count: 2  }
+  ],
+  pillarWarning: 'Experiments underweight — target 1 every 2 weeks',
+  pipeline: [
+    { stage: 'Inbox',     count: 4 },
+    { stage: 'Exploring', count: 2 },
+    { stage: 'Drafting',  count: 1 },
+    { stage: 'Ready',     count: 2 },
+    { stage: 'Scheduled', count: 3 }
+  ],
+  nextPost: {
+    title:  'The spec is never the problem. The assumptions under it are.',
+    date:   'Monday, May 19',
+    pillar: 'Observation',
+    status: 'ready',
+    tags:   ['Design thinking', 'Strategy', 'Text post'],
+    hook:   'Opens with a pattern notice from client work → reframes spec reviews',
+    cta:    'What\'s the last assumption you caught too late?'
+  },
+  recentPosts: [
+    { title: 'Why I stopped calling myself a UX designer', pillar: 'obs',  date: 'May 15', perf: 85 },
+    { title: 'Claude as design critique partner',           pillar: 'exp',  date: 'May 13', perf: 92 },
+    { title: 'Bolt.new + Supabase full stack in 20min',    pillar: 'find', date: 'May 11', perf: 70 },
+    { title: '"Alignment" = nobody owns the decision',     pillar: 'obs',  date: 'May 8',  perf: 78 },
+    { title: 'Perplexity Deep Research for PMs',           pillar: 'find', date: 'May 4',  perf: 62 },
+    { title: 'The 3 prompts I use every design sprint',    pillar: 'obs',  date: 'May 1',  perf: 55 }
+  ],
+  inbox: [
+    { idea: 'Most designers present solutions. The great ones present tensions.', pillar: 'Observation', source: 'Work',        format: 'Text Post',  priority: 4 },
+    { idea: 'Repomix — pack any GitHub repo into a single LLM context file',      pillar: 'Cool Find',   source: 'GitHub',      format: 'Screenshot', priority: 5 },
+    { idea: 'Built a Figma → Claude → prototype pipeline in one afternoon',        pillar: 'Experiment',  source: 'Claude',      format: 'Breakdown',  priority: 3 },
+    { idea: 'AI product strategy ≠ AI feature roadmap. Nobody talks about this.', pillar: 'Observation', source: 'Observation', format: 'Text Post',  priority: 4 }
+  ],
+  kanban: {
+    Inbox:     [
+      { title: 'Design tensions vs. solutions', pillar: 'obs',  format: 'Text',       priority: 4 },
+      { title: 'Repomix GitHub tool',            pillar: 'find', format: 'Screenshot', priority: 5 }
+    ],
+    Exploring: [
+      { title: 'AI strategy ≠ AI roadmap gap',      pillar: 'obs',  format: 'Text'      },
+      { title: 'uv — Python pkg manager 10x faster', pillar: 'find', format: 'Breakdown' }
+    ],
+    Drafting:  [
+      { title: 'Figma → Claude → prototype pipeline', pillar: 'exp', format: 'Breakdown' }
+    ],
+    Ready:     [
+      { title: 'The spec is never the problem',    pillar: 'obs',  format: 'Text'       },
+      { title: 'Cursor composer multi-file edits', pillar: 'find', format: 'Screenshot' }
+    ],
+    Scheduled: [
+      { title: 'The spec is never the problem',   pillar: 'obs',  format: 'Text',      date: 'May 19' },
+      { title: 'Exa — AI-native search API',      pillar: 'find', format: 'Breakdown', date: 'May 22' },
+      { title: 'Vibe coding design system audit', pillar: 'exp',  format: 'Breakdown', date: 'May 24' }
+    ],
+    Posted:    [
+      { title: 'Why I stopped calling myself a UX designer', pillar: 'obs',  date: 'May 15' },
+      { title: 'Perplexity Deep Research for PMs',           pillar: 'find', date: 'May 4'  }
+    ],
+    Repurpose: [
+      { title: 'Claude as design critique partner', pillar: 'exp', format: 'Carousel?' }
+    ]
+  },
+  calendar: {
+    month: 'May 2025',
+    today: 17,
+    startWeekday: 3,
+    totalDays: 31,
+    events: [
+      { day: 1,  title: 'Why I stopped calling myself a UX designer', pillar: 'obs'   },
+      { day: 4,  title: 'Perplexity Deep Research for PMs',           pillar: 'find'  },
+      { day: 8,  title: 'Alignment = nobody owns the decision',       pillar: 'obs'   },
+      { day: 11, title: 'Bolt.new + Supabase full stack',             pillar: 'find'  },
+      { day: 13, title: 'Claude as design critique — build log',      pillar: 'exp'   },
+      { day: 15, title: 'User research ≠ confirmation bias',          pillar: 'obs'   },
+      { day: 18, title: 'Cursor composer multi-file edits',           pillar: 'find'  },
+      { day: 19, title: 'The spec is never the problem →',            pillar: 'sched' },
+      { day: 22, title: 'Exa — AI-native search API →',              pillar: 'sched' },
+      { day: 24, title: 'Vibe coding design system audit →',         pillar: 'sched' }
+    ]
+  },
+  library: [
+    { title: 'Why I stopped calling myself a UX designer', pillar: 'obs',  format: 'Text',       date: 'May 15', perf: 85, repurpose: true,  notes: 'High engagement' },
+    { title: 'Claude as design critique partner',           pillar: 'exp',  format: 'Breakdown',  date: 'May 13', perf: 92, repurpose: true,  notes: 'Best performer'  },
+    { title: 'Bolt.new + Supabase full stack in 20min',    pillar: 'find', format: 'Screenshot', date: 'May 11', perf: 70, repurpose: false, notes: '—'              },
+    { title: '"Alignment" means nobody owns the decision', pillar: 'obs',  format: 'Text',       date: 'May 8',  perf: 78, repurpose: false, notes: '—'              },
+    { title: 'Perplexity Deep Research for PMs',           pillar: 'find', format: 'Breakdown',  date: 'May 4',  perf: 62, repurpose: false, notes: '—'              },
+    { title: 'The 3 prompts I use every design sprint',    pillar: 'obs',  format: 'Text',       date: 'May 1',  perf: 55, repurpose: false, notes: '—'              }
+  ],
+  experiments: [
+    {
+      title: 'Claude as a design critique partner',
+      date: 'May 13', status: 'posted',
+      description: 'Prompted Claude to review a mid-fi prototype like a senior designer. Compared output to actual team critique session.',
+      lesson: '✓ Key lesson: framing matters more than the design itself',
+      lessonColor: '#2a4a00',
+      draftIdea: 'Claude as design critique partner'
+    },
+    {
+      title: 'Vibe coding a design system audit tool',
+      date: 'May 27', status: 'scheduled',
+      description: 'Used Claude + Cursor to build a script that scans a Figma file and flags inconsistencies. Zero code experience needed.',
+      lesson: '→ In progress: writing the build log',
+      lessonColor: '#5a4800',
+      draftIdea: 'Vibe coding a design system audit tool with Claude and Cursor'
+    },
+    {
+      title: 'Figma → Claude → working prototype in one afternoon',
+      date: null, status: 'drafting',
+      description: 'Exported Figma frames as context for Claude. Generated interactive prototype from component descriptions alone.',
+      lesson: '→ Draft 60% complete',
+      lessonColor: '#1a2a5a',
+      draftIdea: 'Figma to Claude to prototype pipeline in one afternoon'
+    }
+  ],
+  timeline: [
+    { time: '09:00', type: 'obs',  icon: '✍', title: 'Drafting: Spec assumptions post',     sub: 'Ready to publish Mon 19'  },
+    { time: '10:30', type: 'find', icon: '⌘', title: 'Review: Exa API notes',               sub: 'Thu 22 scheduled'         },
+    { time: '14:00', type: 'exp',  icon: '◉', title: 'Experiment: Figma → Claude pipeline', sub: 'Draft 60% · finish today' },
+    { time: '16:00', type: 'meet', icon: '◈', title: 'Inbox triage + idea capture',         sub: '4 items waiting'          }
+  ],
+  cadence: [
+    { color: '#E9D94C', label: 'Mon → Observation'  },
+    { color: '#B8CCF0', label: 'Thu → Cool Find'    },
+    { color: '#F2B8C6', label: 'Sat/2w → Experiment'}
+  ],
+  navViews: [
+    { id: 'dashboard', icon: '⬡', label: 'Dashboard'          },
+    { id: 'inbox',     icon: '✦', label: 'Inbox',     badge: 'inbox'   },
+    { id: 'pipeline',  icon: '◈', label: 'Editorial Pipeline'  },
+    { id: 'calendar',  icon: '◻', label: 'Content Calendar'    },
+    { id: 'lab',       icon: '◎', label: 'Experiment Lab', badge: 'lab' },
+    { id: 'library',   icon: '◑', label: 'Posted Library', badge: 'library' }
+  ],
+  navTools: [
+    { id: 'draft',    icon: '✐', label: 'AI Draft Studio'  },
+    { id: 'playbook', icon: '◧', label: 'Writing Playbook' }
+  ],
+  playbook: {
+    formats: [
+      { type: 'Observation post · Monday',    style: 'obs',
+        steps: ['Hook — pattern or provocation','The observation itself','Pattern noticed across contexts','Concrete example','The insight / so what','Discussion question to close'] },
+      { type: 'Cool Find post · Thursday',    style: 'find',
+        steps: ['Hook — "Found something..."','What it is (1 line)','Why it matters (the signal)','Specific use case','Who should actually care','CTA — link or question'] },
+      { type: 'Experiment post · Saturday/2w', style: 'exp',
+        steps: ['Hook — the unexpected result','What I actually tried','Why I tried it','The process (brief)','What worked / what failed','Big lesson + CTA'] }
+    ],
+    voiceAlways: ['sharp','thoughtful','strategic','concise','authentic','practical','high-signal','slightly opinionated'],
+    voiceNever:  ['generic','motivational fluff','cringe growth content','vague','low-signal']
+  },
+  drafts: {
+    observation: {
+      day: 'Monday',
+      gen: () => `Most designers present solutions.\nThe great ones present tensions.\n\nHere's what I keep noticing in product reviews:\n\nThe room lights up when someone names the real constraint — not when they defend their design.\n\n→ Why this matters:\nDesign is a series of trade-offs, not a series of correct answers. When you frame your work as "here's what I decided," you invite judgment. When you frame it as "here are the tensions I navigated," you invite thinking.\n\nPattern I see in senior designers: they spend more time articulating the problem space than defending the solution space.\n\nThe insight: clarity of reasoning is more persuasive than clarity of presentation.\n\nWhat tensions do you find hardest to name clearly?`
+    },
+    find: {
+      day: 'Thursday',
+      gen: () => `Found a GitHub tool sitting quietly at 12k stars.\n\nRepomix — packs any repo into a single file optimized for LLM context.\n\nWhy it matters:\nEvery time I paste code into Claude or GPT, I'm manually cherry-picking. Repomix eliminates that. One command. Full repo as context.\n\nUse case that actually matters:\n→ Drop an unfamiliar codebase → instant architectural understanding\n→ Feed it to Claude for a full audit → no more file-by-file copying\n→ Stack multiple repos → understand dependencies in one shot\n\nThis is the kind of tool that quietly triples your throughput.\n\n→ github.com/yamadashy/repomix`
+    },
+    experiment: {
+      day: 'Saturday (biweekly)',
+      gen: () => `I spent one afternoon building something I thought would take a week.\n\nWhat I tried:\nFigma frames → Claude → working interactive prototype. No hand-coding. No Webflow.\n\nWhat worked:\nComponent logic was solid. Button states, hover effects, responsive behavior — all correct by round 2.\n\nWhat failed:\nTypography rendering. Claude consistently defaulted to system fonts and off-brand spacing.\n\nBig lesson:\nThe bottleneck isn't AI capability. It's the quality of your design handoff.\nGarbage annotations → garbage prototype.\n\nAre you using AI in your design-to-dev workflow? What's your biggest blocker?`
+    }
+  }
+};
+
+/* ═══════════════════════════════
+   HELPERS
+═══════════════════════════════ */
+const ICONS  = { obs: '✍', find: '⌘', exp: '◉' };
+const LABELS = { obs: 'Observation', find: 'Cool Find', exp: 'Experiment',
+                 Observation: 'obs', 'Cool Find': 'find', Experiment: 'exp' };
+
+function pill(p, label)  { return `<span class="pill ${p}">${label||LABELS[p]||p}</span>`; }
+function spill(p)        { return `<span class="spill ${p}">${LABELS[p]||p}</span>`; }
+function statusPill(s)   { return `<span class="status-pill ${s}">${s}</span>`; }
+function prio(n, max=5)  { return `<div class="prio">${Array.from({length:max},(_,i)=>`<span class="pd" style="background:${i<n?'var(--yellow)':'var(--border)'}"></span>`).join('')}</div>`; }
+function getGreeting()   { const h=new Date().getHours(); return h<12?'Good morning':h<17?'Good afternoon':'Good evening'; }
+
+/* ═══════════════════════════════
+   SIDEBAR
+═══════════════════════════════ */
+function renderSidebar() {
+  const badgeCounts = { inbox: DATA.inbox.length, lab: DATA.experiments.length, library: DATA.library.length };
+  const badgeCls    = { inbox: 'nb', lab: 'nb', library: 'nb nb-g' };
+
+  const views = DATA.navViews.map(n => {
+    const b = n.badge ? `<span class="${badgeCls[n.badge]}">${badgeCounts[n.badge]}</span>` : '';
+    return `<div class="ni${n.id==='dashboard'?' active':''}" onclick="go('${n.id}',this)"><span class="ni-icon">${n.icon}</span>${n.label}${b}</div>`;
+  }).join('');
+
+  const tools = DATA.navTools.map(n =>
+    `<div class="ni" onclick="go('${n.id}',this)"><span class="ni-icon">${n.icon}</span>${n.label}</div>`
+  ).join('');
+
+  const cadence = DATA.cadence.map(c =>
+    `<div class="crow"><span class="cdot" style="background:${c.color}"></span>${c.label}</div>`
+  ).join('');
+
+  document.getElementById('sidebar').innerHTML = `
+    <div class="logo">
+      <div class="logo-name">Brand<span class="logo-dot">.</span>OS</div>
+      <div class="logo-sub">${DATA.user.tagline.replace('\n','<br/>')}</div>
     </div>
-  </div>
-</aside>
+    <nav class="nav">
+      <div class="nl">Views</div>${views}
+      <div class="nl">Tools</div>${tools}
+    </nav>
+    <div class="sfooter">
+      <div class="ccard"><div class="ctitle">Weekly Cadence</div>${cadence}</div>
+    </div>`;
+}
 
-<!-- ════ MAIN ════ -->
-<main class="main">
+/* ═══════════════════════════════
+   RIGHT PANEL
+═══════════════════════════════ */
+function renderRightPanel() {
+  const cal = DATA.calendar;
+  const evMap = {};
+  cal.events.forEach(e => evMap[e.day] = e);
 
-  <!-- ═══ DASHBOARD ═══ -->
-  <div id="view-dashboard" class="view active">
+  const miniDays = ['Mo','Tu','We','Th','Fr','Sa','Su'].map(d=>`<div class="cal-dh">${d}</div>`).join('');
+  let cells = Array(cal.startWeekday).fill('<div class="cal-d"></div>').join('');
+  for(let d=1; d<=cal.totalDays; d++) {
+    const ev = evMap[d];
+    let cls = 'cal-d cur';
+    if(d === cal.today)               cls += ' today';
+    else if(ev?.pillar === 'sched')   cls += ' sched';
+    else if(ev)                       cls += ' posted';
+    cells += `<div class="${cls}">${d}</div>`;
+  }
 
-    <!-- Topbar -->
+  const tlItems = DATA.timeline.map(t => `
+    <div class="tl-item">
+      <div class="tl-time">${t.time}</div>
+      <div class="tl-dot ${t.type}">${t.icon}</div>
+      <div class="tl-info">
+        <div class="tl-title">${t.title}</div>
+        <div class="tl-sub">${t.sub}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('rpanel').innerHTML = `
+    <div class="cal-head">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">${cal.month}</div>
+      <div class="cal-navs">
+        <div class="cal-nb">‹</div>
+        <div class="cal-month-label">${cal.month}</div>
+        <div class="cal-nb">›</div>
+      </div>
+    </div>
+    <div><div class="cal-grid">${miniDays}${cells}</div></div>
+    <button class="rp-add" onclick="go('inbox',null)">+ Add event</button>
+    <div class="rp-row2"><div class="rp-icon-btn">↺</div><div class="rp-icon-btn">⊡</div></div>
+    <div class="tl-head">
+      <div class="tl-date">${cal.month.split(' ')[0]} ${cal.today}</div>
+      <div class="tl-filter">Today ▾</div>
+    </div>
+    <div class="tl-label">Today's schedule</div>
+    <div>${tlItems}</div>
+    <button class="tl-view" onclick="go('library',null)">View posted library →</button>`;
+}
+
+/* ═══════════════════════════════
+   DASHBOARD
+═══════════════════════════════ */
+function renderDashboard() {
+  const s = DATA.stats;
+  const total = DATA.pillarMix.reduce((a,b)=>a+b.count,0);
+  const maxPipe = Math.max(...DATA.pipeline.map(p=>p.count));
+  const scheduled = DATA.pipeline.find(p=>p.stage==='Scheduled')?.count || 0;
+
+  const pillarStats = DATA.pillarMix.map(p =>
+    `<div class="kpi-stat"><div class="kv">${p.count}</div><div class="kl">${p.label}</div></div>`
+  ).join('');
+
+  const pipeRows = DATA.pipeline.map(p =>
+    `<div class="pipe-row">
+      <div class="pipe-stage">${p.stage}</div>
+      <div class="pipe-track"><div class="pipe-fill" style="width:${Math.round(p.count/maxPipe*100)}%"></div></div>
+      <div class="pipe-n">${p.count}</div>
+    </div>`
+  ).join('');
+
+  const pilRows = DATA.pillarMix.map(p =>
+    `<div class="pil-row">
+      <div class="pil-label">${p.label}</div>
+      <div class="pil-track"><div class="pil-fill" style="width:${Math.round(p.count/total*100)}%"></div></div>
+      <div class="pil-n">${p.count}</div>
+    </div>`
+  ).join('');
+
+  const posts = DATA.recentPosts.map(p => `
+    <div class="post-item">
+      <div class="picon ${p.pillar}">${ICONS[p.pillar]}</div>
+      <div class="pinfo">
+        <div class="ptitle">${p.title}</div>
+        <div class="psub">${spill(p.pillar)}</div>
+      </div>
+      <div class="pright">
+        <div class="ptag">${p.date}</div>
+        <div class="pbar"><div class="pfill" style="width:${p.perf}%"></div></div>
+      </div>
+    </div>`).join('');
+
+  const np = DATA.nextPost;
+
+  document.getElementById('view-dashboard').innerHTML = `
     <div class="topbar">
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
         <input class="search-input" placeholder="Search ideas, posts..."/>
       </div>
       <div class="fpills">
-        <span class="fpill on">Observations</span>
-        <span class="fpill off">Cool Finds</span>
-        <span class="fpill off">Experiments</span>
+        ${DATA.pillarMix.map((p,i)=>`<span class="fpill ${i===0?'on':'off'}">${p.label}s</span>`).join('')}
       </div>
       <div class="tbbtns">
         <div class="btn light sm" onclick="go('draft',null)">+ Draft</div>
@@ -356,25 +621,19 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
       </div>
     </div>
 
-    <!-- Greeting -->
     <div>
-      <div class="greeting-title">Good morning, Anand.</div>
-      <div class="greeting-sub">Brand OS is ready. You have 4 ideas in your inbox and 3 posts scheduled this week. Experiment count is below target — consider logging one soon.</div>
+      <div class="greeting-title">${getGreeting()}, ${DATA.user.name}.</div>
+      <div class="greeting-sub">Brand OS is ready. You have ${DATA.inbox.length} ideas in your inbox and ${scheduled} posts scheduled this week. ${DATA.pillarWarning}.</div>
     </div>
 
-    <!-- KPI row -->
     <div class="kpi-row">
       <div class="kpi-card yellow">
         <div>
           <div class="kpi-label">Posts Published</div>
-          <div class="kpi-val">27</div>
-          <div class="kpi-sub">+6 this month</div>
+          <div class="kpi-val">${s.published}</div>
+          <div class="kpi-sub">${s.publishedDelta}</div>
         </div>
-        <div class="kpi-bottom">
-          <div class="kpi-stat"><div class="kv">16</div><div class="kl">Observation</div></div>
-          <div class="kpi-stat"><div class="kv">9</div><div class="kl">Cool Find</div></div>
-          <div class="kpi-stat"><div class="kv">2</div><div class="kl">Experiment</div></div>
-        </div>
+        <div class="kpi-bottom">${pillarStats}</div>
         <div class="kpi-deco">
           <svg width="90" height="70" viewBox="0 0 90 70" fill="none">
             <rect x="0" y="36" width="13" height="34" rx="5" fill="#1A1A00"/>
@@ -385,136 +644,83 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
           </svg>
         </div>
       </div>
-
       <div class="kpi-card pink">
         <div>
           <div class="kpi-label">Posting Streak</div>
-          <div class="kpi-val">6w</div>
+          <div class="kpi-val">${s.streakCurrent}</div>
           <div class="kpi-sub">consecutive weeks</div>
         </div>
         <div class="kpi-bottom">
-          <div class="kpi-stat"><div class="kv">6w</div><div class="kl">Current</div></div>
-          <div class="kpi-stat"><div class="kv">8w</div><div class="kl">Best</div></div>
-          <div class="kpi-stat"><div class="kv">17</div><div class="kl">Posts May</div></div>
+          <div class="kpi-stat"><div class="kv">${s.streakCurrent}</div><div class="kl">Current</div></div>
+          <div class="kpi-stat"><div class="kv">${s.streakBest}</div><div class="kl">Best</div></div>
+          <div class="kpi-stat"><div class="kv">${s.streakPostsThisMonth}</div><div class="kl">Posts May</div></div>
         </div>
         <div class="kpi-deco">
           <svg width="100" height="70" viewBox="0 0 100 70" fill="none">
-            <path d="M0 55 Q12 22 24 35 Q36 48 48 18 Q60 5 72 22 Q84 38 96 10" stroke="#4A1A28" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M0 55 Q12 22 24 35 Q36 48 48 18 Q60 5 72 22 Q84 38 96 10" stroke="#4A1A28" stroke-width="2.5" fill="none" stroke-linecap="round"/>
             <circle cx="96" cy="10" r="4.5" fill="#4A1A28"/>
-            <!-- Heart shape -->
             <path d="M72 58 C72 58 58 48 58 40 C58 35.6 61.6 32 66 32 C68.2 32 70.2 33 72 34.8 C73.8 33 75.8 32 78 32 C82.4 32 86 35.6 86 40 C86 48 72 58 72 58Z" fill="#4A1A28" opacity=".2"/>
           </svg>
         </div>
       </div>
     </div>
 
-    <!-- Mid row -->
     <div class="mid-row">
       <div class="mc olive">
-        <div class="mc-title">Pipeline Snapshot · 9 active</div>
-        <div class="pipe-row"><div class="pipe-stage">Inbox</div><div class="pipe-track"><div class="pipe-fill" style="width:44%"></div></div><div class="pipe-n">4</div></div>
-        <div class="pipe-row"><div class="pipe-stage">Exploring</div><div class="pipe-track"><div class="pipe-fill" style="width:22%"></div></div><div class="pipe-n">2</div></div>
-        <div class="pipe-row"><div class="pipe-stage">Drafting</div><div class="pipe-track"><div class="pipe-fill" style="width:11%"></div></div><div class="pipe-n">1</div></div>
-        <div class="pipe-row"><div class="pipe-stage">Ready</div><div class="pipe-track"><div class="pipe-fill" style="width:22%"></div></div><div class="pipe-n">2</div></div>
-        <div class="pipe-row"><div class="pipe-stage">Scheduled</div><div class="pipe-track"><div class="pipe-fill" style="width:33%"></div></div><div class="pipe-n">3</div></div>
-        <div class="mc-deco">
-          <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-            <polygon points="40,6 72,66 8,66" fill="#1A2A00"/>
-          </svg>
-        </div>
+        <div class="mc-title">Pipeline Snapshot · ${DATA.pipeline.reduce((a,b)=>a+b.count,0)} active</div>
+        ${pipeRows}
+        <div class="mc-deco"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><polygon points="40,6 72,66 8,66" fill="#1A2A00"/></svg></div>
       </div>
-
       <div class="mc blue">
-        <div class="mc-title">Pillar Mix · 27 posts</div>
-        <div class="pil-row"><div class="pil-label">Observation</div><div class="pil-track"><div class="pil-fill" style="width:59%"></div></div><div class="pil-n">16</div></div>
-        <div class="pil-row"><div class="pil-label">Cool Find</div><div class="pil-track"><div class="pil-fill" style="width:33%"></div></div><div class="pil-n">9</div></div>
-        <div class="pil-row"><div class="pil-label">Experiment</div><div class="pil-track"><div class="pil-fill" style="width:8%"></div></div><div class="pil-n">2</div></div>
-        <div class="warn">⚠ Experiments underweight — target 1 every 2 weeks</div>
-        <div class="mc-deco">
-          <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-            <path d="M40 6 L43.5 32 L68 18 L52 38 L74 43 L48 48 L62 70 L40 55 L18 70 L32 48 L6 43 L28 38 L12 18 L37 32 Z" fill="#0A1A3A"/>
-          </svg>
-        </div>
+        <div class="mc-title">Pillar Mix · ${total} posts</div>
+        ${pilRows}
+        <div class="warn">⚠ ${DATA.pillarWarning}</div>
+        <div class="mc-deco"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><path d="M40 6 L43.5 32 L68 18 L52 38 L74 43 L48 48 L62 70 L40 55 L18 70 L32 48 L6 43 L28 38 L12 18 L37 32 Z" fill="#0A1A3A"/></svg></div>
       </div>
     </div>
 
-    <!-- Bot row -->
     <div class="bot-row">
       <div class="wcard">
         <div class="wcard-h">
           <div class="wcard-title">Recent Posts</div>
-          <div class="wcard-tag">last 6 · repurpose flagged</div>
+          <div class="wcard-tag">last ${DATA.recentPosts.length} · repurpose flagged</div>
         </div>
-        <div class="post-item">
-          <div class="picon obs">✍</div>
-          <div class="pinfo"><div class="ptitle">Why I stopped calling myself a UX designer</div><div class="psub"><span class="spill obs">Obs</span></div></div>
-          <div class="pright"><div class="ptag">May 15</div><div class="pbar"><div class="pfill" style="width:85%"></div></div></div>
-        </div>
-        <div class="post-item">
-          <div class="picon exp">◉</div>
-          <div class="pinfo"><div class="ptitle">Claude as design critique partner</div><div class="psub"><span class="spill exp">Exp</span></div></div>
-          <div class="pright"><div class="ptag">May 13</div><div class="pbar"><div class="pfill" style="width:92%"></div></div></div>
-        </div>
-        <div class="post-item">
-          <div class="picon find">⌘</div>
-          <div class="pinfo"><div class="ptitle">Bolt.new + Supabase full stack in 20min</div><div class="psub"><span class="spill find">Find</span></div></div>
-          <div class="pright"><div class="ptag">May 11</div><div class="pbar"><div class="pfill" style="width:70%"></div></div></div>
-        </div>
-        <div class="post-item">
-          <div class="picon obs">✍</div>
-          <div class="pinfo"><div class="ptitle">"Alignment" = nobody owns the decision</div><div class="psub"><span class="spill obs">Obs</span></div></div>
-          <div class="pright"><div class="ptag">May 8</div><div class="pbar"><div class="pfill" style="width:78%"></div></div></div>
-        </div>
-        <div class="post-item">
-          <div class="picon find">⌘</div>
-          <div class="pinfo"><div class="ptitle">Perplexity Deep Research for PMs</div><div class="psub"><span class="spill find">Find</span></div></div>
-          <div class="pright"><div class="ptag">May 4</div><div class="pbar"><div class="pfill" style="width:62%"></div></div></div>
-        </div>
-        <div class="post-item">
-          <div class="picon obs">✍</div>
-          <div class="pinfo"><div class="ptitle">The 3 prompts I use every design sprint</div><div class="psub"><span class="spill obs">Obs</span></div></div>
-          <div class="pright"><div class="ptag">May 1</div><div class="pbar"><div class="pfill" style="width:55%"></div></div></div>
-        </div>
+        ${posts}
       </div>
-
-      <!-- Detail card -->
       <div class="detail-card">
         <div style="display:flex;align-items:flex-start;justify-content:space-between">
-          <div>
-            <div class="dc-name">Next Post</div>
-            <div class="dc-meta">Monday, May 19 · Observation</div>
-          </div>
-          <div class="dc-id">READY</div>
+          <div><div class="dc-name">Next Post</div><div class="dc-meta">${np.date} · ${np.pillar}</div></div>
+          <div class="dc-id">${np.status.toUpperCase()}</div>
         </div>
-        <div class="dc-tags">
-          <span class="dctag">Design thinking</span>
-          <span class="dctag">Strategy</span>
-          <span class="dctag">Text post</span>
-        </div>
+        <div class="dc-tags">${np.tags.map(t=>`<span class="dctag">${t}</span>`).join('')}</div>
         <div class="dc-divider"></div>
-        <div class="dc-row">
-          <div class="dc-key">Title</div>
-          <div class="dc-val">The spec is never the problem. The assumptions under it are.</div>
-        </div>
-        <div class="dc-row">
-          <div class="dc-key">Hook</div>
-          <div class="dc-val">Opens with a pattern notice from client work → reframes spec reviews</div>
-        </div>
-        <div class="dc-row">
-          <div class="dc-key">CTA</div>
-          <div class="dc-val">What's the last assumption you caught too late?</div>
-        </div>
-        <div class="dc-row">
-          <div class="dc-key">Status</div>
-          <div class="dc-val"><span class="status-pill posted">Ready to post</span></div>
-        </div>
+        <div class="dc-row"><div class="dc-key">Title</div><div class="dc-val">${np.title}</div></div>
+        <div class="dc-row"><div class="dc-key">Hook</div><div class="dc-val">${np.hook}</div></div>
+        <div class="dc-row"><div class="dc-key">CTA</div><div class="dc-val">${np.cta}</div></div>
+        <div class="dc-row"><div class="dc-key">Status</div><div class="dc-val">${statusPill('ready')}</div></div>
         <button class="dc-btn" onclick="go('draft',null)">Open in Draft Studio →</button>
       </div>
-    </div>
-  </div>
+    </div>`;
+}
 
-  <!-- ═══ INBOX ═══ -->
-  <div id="view-inbox" class="view">
+/* ═══════════════════════════════
+   INBOX
+═══════════════════════════════ */
+function renderInbox() {
+  const rows = DATA.inbox.map((item, i) => {
+    const pc = LABELS[item.pillar];
+    return `<tr>
+      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${String(i+1).padStart(2,'0')}</td>
+      <td style="font-size:11px;font-weight:500;max-width:200px">${item.idea}</td>
+      <td>${pill(pc, item.pillar)}</td>
+      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${item.source}</td>
+      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${item.format}</td>
+      <td>${prio(item.priority)}</td>
+      <td><div class="btn dark sm" onclick="draftFrom('${pc}','${item.idea.replace(/'/g,"\\'")}')">Draft →</div></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('view-inbox').innerHTML = `
     <div class="sh">
       <div><div class="sh-title">Inbox</div><div class="sh-sub">Quick capture · classify later</div></div>
       <div class="btn dark sm" onclick="go('draft',null)">Process with AI →</div>
@@ -527,393 +733,267 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
     </div>
     <table class="db-table">
       <thead><tr><th>#</th><th>Raw Idea</th><th>Pillar</th><th>Source</th><th>Format</th><th>Priority</th><th>Action</th></tr></thead>
-      <tbody id="inbox-body">
-        <tr><td style="font-family:var(--mono);font-size:10px;color:var(--muted)">01</td><td style="font-size:11px;max-width:200px">Most designers present solutions. The great ones present tensions.</td><td><span class="pill obs">Observation</span></td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Work</td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Text Post</td><td><div class="prio"><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--border)"></span></div></td><td><div class="btn dark sm" onclick="draftFrom('observation','Most designers present solutions. The great ones present tensions.')">Draft →</div></td></tr>
-        <tr><td style="font-family:var(--mono);font-size:10px;color:var(--muted)">02</td><td style="font-size:11px;max-width:200px">Repomix — pack any GitHub repo into a single LLM context file</td><td><span class="pill find">Cool Find</span></td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">GitHub</td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Screenshot</td><td><div class="prio"><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span></div></td><td><div class="btn dark sm" onclick="draftFrom('find','Repomix — pack any GitHub repo into a single LLM context file')">Draft →</div></td></tr>
-        <tr><td style="font-family:var(--mono);font-size:10px;color:var(--muted)">03</td><td style="font-size:11px;max-width:200px">Built a Figma → Claude → prototype pipeline in one afternoon</td><td><span class="pill exp">Experiment</span></td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Claude</td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Breakdown</td><td><div class="prio"><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--border)"></span><span class="pd" style="background:var(--border)"></span></div></td><td><div class="btn dark sm" onclick="draftFrom('experiment','Built a Figma to Claude to prototype pipeline in one afternoon')">Draft →</div></td></tr>
-        <tr><td style="font-family:var(--mono);font-size:10px;color:var(--muted)">04</td><td style="font-size:11px;max-width:200px">AI product strategy ≠ AI feature roadmap. Nobody talks about this gap.</td><td><span class="pill obs">Observation</span></td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Observation</td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Text Post</td><td><div class="prio"><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--border)"></span></div></td><td><div class="btn dark sm" onclick="draftFrom('observation','AI product strategy is not the same as an AI feature roadmap. Nobody talks about this gap.')">Draft →</div></td></tr>
-      </tbody>
-    </table>
-  </div>
+      <tbody id="inbox-body">${rows}</tbody>
+    </table>`;
+}
 
-  <!-- ═══ PIPELINE ═══ -->
-  <div id="view-pipeline" class="view">
+/* ═══════════════════════════════
+   PIPELINE
+═══════════════════════════════ */
+function renderPipeline() {
+  const cols = Object.entries(DATA.kanban).map(([stage, cards]) => {
+    const html = cards.map(c => {
+      const cls = `kcard${stage==='Scheduled'?' scheduled':stage==='Repurpose'?' repurpose':''}`;
+      const opacity = stage === 'Posted' ? ' style="opacity:.5"' : '';
+      return `<div class="${cls}"${opacity}>
+        <div style="margin-bottom:5px">${pill(c.pillar)}</div>
+        <div class="kcard-title">${c.title}</div>
+        <div class="kcard-meta">
+          ${c.format?`<span class="kcard-fmt">${c.format}</span>`:''}
+          ${c.priority?`<div style="margin-left:auto">${prio(c.priority)}</div>`:''}
+          ${c.date?`<span class="kcard-date">${c.date}</span>`:''}
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="kcol">
+      <div class="kcol-h"><span class="kcol-name">${stage}</span><span class="kcol-n">${cards.length}</span></div>
+      ${html}
+    </div>`;
+  }).join('');
+
+  document.getElementById('view-pipeline').innerHTML = `
     <div class="sh"><div><div class="sh-title">Editorial Pipeline</div><div class="sh-sub">Kanban · idea to posted</div></div></div>
-    <div class="kanban">
-      <div class="kcol"><div class="kcol-h"><span class="kcol-name">Inbox</span><span class="kcol-n">4</span></div>
-        <div class="kcard"><div style="margin-bottom:5px"><span class="pill obs">Obs</span></div><div class="kcard-title">Design tensions vs. solutions</div><div class="kcard-meta"><span class="kcard-fmt">Text</span><div class="prio" style="margin-left:auto"><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--border)"></span></div></div></div>
-        <div class="kcard"><div style="margin-bottom:5px"><span class="pill find">Find</span></div><div class="kcard-title">Repomix GitHub tool</div><div class="kcard-meta"><span class="kcard-fmt">Screenshot</span><div class="prio" style="margin-left:auto"><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span></div></div></div>
-      </div>
-      <div class="kcol"><div class="kcol-h"><span class="kcol-name">Exploring</span><span class="kcol-n">2</span></div>
-        <div class="kcard"><div style="margin-bottom:5px"><span class="pill obs">Obs</span></div><div class="kcard-title">AI strategy ≠ AI roadmap gap</div><div class="kcard-meta"><span class="kcard-fmt">Text</span></div></div>
-        <div class="kcard"><div style="margin-bottom:5px"><span class="pill find">Find</span></div><div class="kcard-title">uv — Python pkg manager 10x faster</div><div class="kcard-meta"><span class="kcard-fmt">Breakdown</span></div></div>
-      </div>
-      <div class="kcol"><div class="kcol-h"><span class="kcol-name">Drafting</span><span class="kcol-n">1</span></div>
-        <div class="kcard"><div style="margin-bottom:5px"><span class="pill exp">Exp</span></div><div class="kcard-title">Figma → Claude → prototype pipeline</div><div class="kcard-meta"><span class="kcard-fmt">Breakdown</span></div></div>
-      </div>
-      <div class="kcol"><div class="kcol-h"><span class="kcol-name">Ready</span><span class="kcol-n">2</span></div>
-        <div class="kcard"><div style="margin-bottom:5px"><span class="pill obs">Obs</span></div><div class="kcard-title">The spec is never the problem</div><div class="kcard-meta"><span class="kcard-fmt">Text</span></div></div>
-        <div class="kcard"><div style="margin-bottom:5px"><span class="pill find">Find</span></div><div class="kcard-title">Cursor composer multi-file edits</div><div class="kcard-meta"><span class="kcard-fmt">Screenshot</span></div></div>
-      </div>
-      <div class="kcol"><div class="kcol-h"><span class="kcol-name">Scheduled</span><span class="kcol-n">3</span></div>
-        <div class="kcard scheduled"><div style="margin-bottom:5px"><span class="pill obs">Obs</span></div><div class="kcard-title">The spec is never the problem</div><div class="kcard-meta"><span class="kcard-fmt">Text</span><span class="kcard-date">May 19</span></div></div>
-        <div class="kcard scheduled"><div style="margin-bottom:5px"><span class="pill find">Find</span></div><div class="kcard-title">Exa — AI-native search API</div><div class="kcard-meta"><span class="kcard-fmt">Breakdown</span><span class="kcard-date">May 22</span></div></div>
-        <div class="kcard scheduled"><div style="margin-bottom:5px"><span class="pill exp">Exp</span></div><div class="kcard-title">Vibe coding design system audit</div><div class="kcard-meta"><span class="kcard-fmt">Breakdown</span><span class="kcard-date">May 24</span></div></div>
-      </div>
-      <div class="kcol"><div class="kcol-h"><span class="kcol-name">Posted</span><span class="kcol-n">12</span></div>
-        <div class="kcard" style="opacity:.5"><div style="margin-bottom:5px"><span class="pill obs">Obs</span></div><div class="kcard-title">Why I stopped calling myself a UX designer</div><div class="kcard-meta"><span class="kcard-date">May 15</span></div></div>
-        <div class="kcard" style="opacity:.5"><div style="margin-bottom:5px"><span class="pill find">Find</span></div><div class="kcard-title">Perplexity Deep Research for PMs</div><div class="kcard-meta"><span class="kcard-date">May 4</span></div></div>
-      </div>
-      <div class="kcol"><div class="kcol-h"><span class="kcol-name">Repurpose</span><span class="kcol-n">1</span></div>
-        <div class="kcard repurpose"><div style="margin-bottom:5px"><span class="pill exp">Exp</span></div><div class="kcard-title">Claude as design critique partner</div><div class="kcard-meta"><span class="kcard-fmt">Carousel?</span></div></div>
-      </div>
-    </div>
-  </div>
+    <div class="kanban">${cols}</div>`;
+}
 
-  <!-- ═══ CALENDAR ═══ -->
-  <div id="view-calendar" class="view">
+/* ═══════════════════════════════
+   CALENDAR
+═══════════════════════════════ */
+function renderCalendar() {
+  const cal = DATA.calendar;
+  const evMap = {};
+  cal.events.forEach(e => evMap[e.day] = e);
+
+  const legend = ['obs','find','exp'].map(p => {
+    const bg = p==='obs'?'var(--yellow-t)':p==='find'?'var(--blue-t)':'var(--pink-t)';
+    const fc = p==='obs'?'#5a4800':p==='find'?'#1a2a5a':'#5a1a28';
+    return `<span style="font-size:9px;font-weight:700;display:flex;align-items:center;gap:4px;color:${fc}"><span style="width:8px;height:8px;border-radius:3px;background:${bg};display:inline-block"></span>${LABELS[p]}</span>`;
+  }).join('');
+
+  const headers = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div class="cv-dh">${d}</div>`).join('');
+  let cells = Array(cal.startWeekday).fill('<div class="cv-d empty"></div>').join('');
+  for(let d=1; d<=cal.totalDays; d++) {
+    const ev = evMap[d];
+    cells += `<div class="cv-d${d===cal.today?' today':''}">
+      <div class="cv-num">${d}${d===cal.today?' ◉':''}</div>
+      ${ev ? `<div class="cv-post ${ev.pillar}">${ev.title}</div>` : ''}
+    </div>`;
+  }
+  const rem = (7 - ((cal.startWeekday + cal.totalDays) % 7)) % 7;
+  cells += Array(rem).fill('<div class="cv-d empty" style="opacity:.2"></div>').join('');
+
+  document.getElementById('view-calendar').innerHTML = `
     <div class="sh">
-      <div><div class="sh-title">Content Calendar — May 2025</div><div class="sh-sub">Mon = Observation · Thu = Cool Find · Sat/2w = Experiment</div></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <span style="font-size:9px;font-weight:700;display:flex;align-items:center;gap:4px;color:#5a4800"><span style="width:8px;height:8px;border-radius:3px;background:var(--yellow-t);display:inline-block;border:1px solid rgba(90,72,0,.2)"></span>Obs</span>
-        <span style="font-size:9px;font-weight:700;display:flex;align-items:center;gap:4px;color:#1a2a5a"><span style="width:8px;height:8px;border-radius:3px;background:var(--blue-t);display:inline-block;border:1px solid rgba(26,42,90,.15)"></span>Find</span>
-        <span style="font-size:9px;font-weight:700;display:flex;align-items:center;gap:4px;color:#5a1a28"><span style="width:8px;height:8px;border-radius:3px;background:var(--pink-t);display:inline-block;border:1px solid rgba(90,26,40,.15)"></span>Exp</span>
-      </div>
+      <div><div class="sh-title">Content Calendar — ${cal.month}</div><div class="sh-sub">Mon = Observation · Thu = Cool Find · Sat/2w = Experiment</div></div>
+      <div style="display:flex;gap:8px;align-items:center">${legend}</div>
     </div>
-    <div class="cal-view-grid">
-      <div class="cv-dh">Mon</div><div class="cv-dh">Tue</div><div class="cv-dh">Wed</div><div class="cv-dh">Thu</div><div class="cv-dh">Fri</div><div class="cv-dh">Sat</div><div class="cv-dh">Sun</div>
-      <div class="cv-d"><div class="cv-num">1</div><div class="cv-post obs">Why I stopped calling myself a UX designer</div></div>
-      <div class="cv-d"><div class="cv-num">2</div></div><div class="cv-d"><div class="cv-num">3</div></div>
-      <div class="cv-d"><div class="cv-num">4</div><div class="cv-post find">Perplexity Deep Research for PMs</div></div>
-      <div class="cv-d"><div class="cv-num">5</div></div><div class="cv-d"><div class="cv-num">6</div></div><div class="cv-d"><div class="cv-num">7</div></div>
-      <div class="cv-d"><div class="cv-num">8</div><div class="cv-post obs">Alignment = nobody owns the decision</div></div>
-      <div class="cv-d"><div class="cv-num">9</div></div><div class="cv-d"><div class="cv-num">10</div></div>
-      <div class="cv-d"><div class="cv-num">11</div><div class="cv-post find">Bolt.new + Supabase full stack</div></div>
-      <div class="cv-d"><div class="cv-num">12</div></div>
-      <div class="cv-d"><div class="cv-num">13</div><div class="cv-post exp">Claude as design critique — build log</div></div>
-      <div class="cv-d"><div class="cv-num">14</div></div>
-      <div class="cv-d"><div class="cv-num">15</div><div class="cv-post obs">User research ≠ confirmation bias</div></div>
-      <div class="cv-d"><div class="cv-num">16</div></div><div class="cv-d"><div class="cv-num">17</div></div>
-      <div class="cv-d today"><div class="cv-num">18</div><div class="cv-post find">Cursor composer multi-file edits</div></div>
-      <div class="cv-d"><div class="cv-num">19</div><div class="cv-post sched">The spec is never the problem →</div></div>
-      <div class="cv-d"><div class="cv-num">20</div></div><div class="cv-d"><div class="cv-num">21</div></div>
-      <div class="cv-d"><div class="cv-num">22</div><div class="cv-post sched">Exa — AI-native search API →</div></div>
-      <div class="cv-d"><div class="cv-num">23</div></div>
-      <div class="cv-d"><div class="cv-num">24</div><div class="cv-post sched">Vibe coding design system audit →</div></div>
-      <div class="cv-d"><div class="cv-num">25</div></div>
-      <div class="cv-d"><div class="cv-num">26</div></div><div class="cv-d"><div class="cv-num">27</div></div><div class="cv-d"><div class="cv-num">28</div></div><div class="cv-d"><div class="cv-num">29</div></div><div class="cv-d"><div class="cv-num">30</div></div><div class="cv-d"><div class="cv-num">31</div></div>
-      <div class="cv-d" style="opacity:.25"></div><div class="cv-d" style="opacity:.25"></div><div class="cv-d" style="opacity:.25"></div><div class="cv-d" style="opacity:.25"></div>
-    </div>
-  </div>
+    <div class="cal-view-grid">${headers}${cells}</div>`;
+}
 
-  <!-- ═══ EXPERIMENT LAB ═══ -->
-  <div id="view-lab" class="view">
+/* ═══════════════════════════════
+   EXPERIMENT LAB
+═══════════════════════════════ */
+function renderLab() {
+  const cards = DATA.experiments.map(e => {
+    const dateStr = e.date ? `${e.date} · ${e.status}` : e.status;
+    const action = e.status === 'posted'
+      ? `<div class="btn light sm">Repurpose</div>`
+      : `<div class="btn dark sm" onclick="draftFrom('experiment','${e.draftIdea.replace(/'/g,"\\'")}')">Draft →</div>`;
+    return `<div class="exp-card">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span class="spill exp">Experiment</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--muted);font-weight:500">${dateStr}</span>
+        </div>
+        <div class="exp-title">${e.title}</div>
+        <div class="exp-meta">${e.description}</div>
+        <div class="exp-note" style="color:${e.lessonColor}">${e.lesson}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">
+        ${statusPill(e.status)}${action}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('view-lab').innerHTML = `
     <div class="sh">
       <div><div class="sh-title">Experiment Lab</div><div class="sh-sub">Claude · vibe coding · AI builds · prototypes</div></div>
       <div class="btn dark sm" onclick="draftFrom('experiment','')">+ Log Experiment</div>
     </div>
-    <div class="exp-card">
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="spill exp">Experiment</span><span style="font-family:var(--mono);font-size:9px;color:var(--muted);font-weight:500">May 13 · Posted</span></div>
-        <div class="exp-title">Claude as a design critique partner</div>
-        <div class="exp-meta">Prompted Claude to review a mid-fi prototype like a senior designer. Compared output to actual team critique session.</div>
-        <div class="exp-note" style="color:#2a4a00">✓ Key lesson: framing matters more than the design itself</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">
-        <span class="status-pill posted">Posted</span>
-        <div class="btn light sm">Repurpose</div>
-      </div>
-    </div>
-    <div class="exp-card">
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="spill exp">Experiment</span><span style="font-family:var(--mono);font-size:9px;color:var(--muted);font-weight:500">May 27 · Scheduled</span></div>
-        <div class="exp-title">Vibe coding a design system audit tool</div>
-        <div class="exp-meta">Used Claude + Cursor to build a script that scans a Figma file and flags inconsistencies. Zero code experience needed.</div>
-        <div class="exp-note" style="color:#5a4800">→ In progress: writing the build log</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">
-        <span class="status-pill scheduled">Scheduled</span>
-        <div class="btn dark sm" onclick="draftFrom('experiment','Vibe coding a design system audit tool with Claude and Cursor')">Draft →</div>
-      </div>
-    </div>
-    <div class="exp-card">
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="spill exp">Experiment</span><span style="font-family:var(--mono);font-size:9px;color:var(--muted);font-weight:500">Drafting</span></div>
-        <div class="exp-title">Figma → Claude → working prototype in one afternoon</div>
-        <div class="exp-meta">Exported Figma frames as context for Claude. Generated interactive prototype from component descriptions alone.</div>
-        <div class="exp-note" style="color:#1a2a5a">→ Draft 60% complete</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">
-        <span class="status-pill drafting">Drafting</span>
-        <div class="btn dark sm" onclick="draftFrom('experiment','Figma to Claude to prototype pipeline in one afternoon')">Finish →</div>
-      </div>
-    </div>
-  </div>
+    ${cards}`;
+}
 
-  <!-- ═══ LIBRARY ═══ -->
-  <div id="view-library" class="view">
+/* ═══════════════════════════════
+   LIBRARY
+═══════════════════════════════ */
+function renderLibrary() {
+  const rows = DATA.library.map((p, i) => `
+    <tr>
+      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${String(i+1).padStart(2,'0')}</td>
+      <td style="font-size:11px;font-weight:500;max-width:180px">${p.title}</td>
+      <td>${spill(p.pillar)}</td>
+      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${p.format}</td>
+      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${p.date}</td>
+      <td><div class="pbar"><div class="pfill" style="width:${p.perf}%"></div></div></td>
+      <td><input type="checkbox" ${p.repurpose?'checked':''} style="accent-color:var(--text)"/></td>
+      <td style="font-size:10px;color:var(--muted)">${p.notes}</td>
+    </tr>`).join('');
+
+  document.getElementById('view-library').innerHTML = `
     <div class="sh"><div><div class="sh-title">Posted Library</div><div class="sh-sub">Published archive · newest first</div></div></div>
     <table class="db-table">
       <thead><tr><th>#</th><th>Post Title</th><th>Pillar</th><th>Format</th><th>Date</th><th>Perf</th><th>Repurpose</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">01</td><td style="font-size:11px;font-weight:500;max-width:180px">Why I stopped calling myself a UX designer</td><td><span class="spill obs">Obs</span></td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Text</td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">May 15</td><td><div class="pbar"><div class="pfill" style="width:85%"></div></div></td><td><input type="checkbox" checked style="accent-color:var(--text)"/></td><td style="font-size:10px;color:var(--muted)">High engagement</td></tr>
-        <tr><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">02</td><td style="font-size:11px;font-weight:500">Claude as design critique partner</td><td><span class="spill exp">Exp</span></td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Breakdown</td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">May 13</td><td><div class="pbar"><div class="pfill" style="width:92%"></div></div></td><td><input type="checkbox" checked style="accent-color:var(--text)"/></td><td style="font-size:10px;color:var(--muted)">Best performer</td></tr>
-        <tr><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">03</td><td style="font-size:11px;font-weight:500">Bolt.new + Supabase full stack in 20min</td><td><span class="spill find">Find</span></td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Screenshot</td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">May 11</td><td><div class="pbar"><div class="pfill" style="width:70%"></div></div></td><td><input type="checkbox" style="accent-color:var(--text)"/></td><td style="font-size:10px;color:var(--muted)">—</td></tr>
-        <tr><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">04</td><td style="font-size:11px;font-weight:500">"Alignment" means nobody owns the decision</td><td><span class="spill obs">Obs</span></td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Text</td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">May 8</td><td><div class="pbar"><div class="pfill" style="width:78%"></div></div></td><td><input type="checkbox" style="accent-color:var(--text)"/></td><td style="font-size:10px;color:var(--muted)">—</td></tr>
-        <tr><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">05</td><td style="font-size:11px;font-weight:500">Perplexity Deep Research for PMs</td><td><span class="spill find">Find</span></td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Breakdown</td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">May 4</td><td><div class="pbar"><div class="pfill" style="width:62%"></div></div></td><td><input type="checkbox" style="accent-color:var(--text)"/></td><td style="font-size:10px;color:var(--muted)">—</td></tr>
-        <tr><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">06</td><td style="font-size:11px;font-weight:500">The 3 prompts I use every design sprint</td><td><span class="spill obs">Obs</span></td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Text</td><td style="font-family:var(--mono);font-size:9px;color:var(--muted)">May 1</td><td><div class="pbar"><div class="pfill" style="width:55%"></div></div></td><td><input type="checkbox" style="accent-color:var(--text)"/></td><td style="font-size:10px;color:var(--muted)">—</td></tr>
-      </tbody>
-    </table>
-  </div>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
 
-  <!-- ═══ DRAFT STUDIO ═══ -->
-  <div id="view-draft" class="view">
+/* ═══════════════════════════════
+   DRAFT STUDIO
+═══════════════════════════════ */
+function renderDraft() {
+  document.getElementById('view-draft').innerHTML = `
     <div class="sh"><div><div class="sh-title">AI Draft Studio</div><div class="sh-sub">Idea in → LinkedIn post out</div></div></div>
     <div class="draft-grid">
       <div class="ai-panel">
         <div class="ai-ph"><div><div class="ai-lab">Input</div><div class="ai-title">Your Idea</div></div></div>
         <div class="ai-pb">
           <div class="fg"><div class="fl">Raw Idea</div><textarea class="fi" id="draft-idea" rows="3" placeholder="Paste your raw thought, observation or find..."></textarea></div>
-          <div class="fg"><div class="fl">Content Pillar</div><select class="fsel" id="draft-pillar" style="width:100%"><option value="observation">Observation</option><option value="find">Cool Find</option><option value="experiment">Experiment</option></select></div>
-          <div class="fg"><div class="fl">Format</div><select class="fsel" id="draft-format" style="width:100%"><option>Text Post</option><option>Carousel</option><option>Screenshot Commentary</option><option>Breakdown</option><option>Mini Thread</option></select></div>
-          <div class="fg"><div class="fl">Source</div><select class="fsel" id="draft-source" style="width:100%"><option>GitHub</option><option>X</option><option>Claude</option><option>Work</option><option>Observation</option><option>Article</option><option>Random Thought</option></select></div>
+          <div class="fg"><div class="fl">Content Pillar</div>
+            <select class="fsel" id="draft-pillar" style="width:100%">
+              <option value="observation">Observation</option>
+              <option value="find">Cool Find</option>
+              <option value="experiment">Experiment</option>
+            </select>
+          </div>
+          <div class="fg"><div class="fl">Format</div>
+            <select class="fsel" id="draft-format" style="width:100%">
+              <option>Text Post</option><option>Carousel</option><option>Screenshot Commentary</option><option>Breakdown</option><option>Mini Thread</option>
+            </select>
+          </div>
+          <div class="fg"><div class="fl">Source</div>
+            <select class="fsel" id="draft-source" style="width:100%">
+              <option>GitHub</option><option>X</option><option>Claude</option><option>Work</option><option>Observation</option><option>Article</option><option>Random Thought</option>
+            </select>
+          </div>
           <button class="btn dark" style="width:100%;justify-content:center;font-size:12px;padding:10px" onclick="generateDraft()">Generate LinkedIn Draft →</button>
         </div>
       </div>
       <div class="ai-panel">
-        <div class="ai-ph"><div><div class="ai-lab">Output</div><div class="ai-title">LinkedIn Draft</div></div><div style="display:flex;gap:6px"><div class="btn light sm" onclick="copyDraft()">Copy</div></div></div>
+        <div class="ai-ph">
+          <div><div class="ai-lab">Output</div><div class="ai-title">LinkedIn Draft</div></div>
+          <div><div class="btn light sm" onclick="copyDraft()">Copy</div></div>
+        </div>
         <div class="ai-pb">
           <div class="draft-out" id="draft-out"><span style="color:var(--muted);font-family:var(--mono);font-size:11px">← Fill in your idea and hit Generate.</span></div>
-          <div style="margin-top:12px;padding-top:12px;border-top:1.5px solid var(--border)"><div class="fl" style="margin-bottom:5px">Suggested posting day</div><div style="font-family:var(--mono);font-size:12px;font-weight:600" id="post-day">—</div></div>
+          <div style="margin-top:12px;padding-top:12px;border-top:1.5px solid var(--border)">
+            <div class="fl" style="margin-bottom:5px">Suggested posting day</div>
+            <div style="font-family:var(--mono);font-size:12px;font-weight:600" id="post-day">—</div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </div>`;
+}
 
-  <!-- ═══ WRITING PLAYBOOK ═══ -->
-  <div id="view-playbook" class="view">
+/* ═══════════════════════════════
+   PLAYBOOK
+═══════════════════════════════ */
+function renderPlaybook() {
+  const styleMap = {
+    obs:  { bg:'var(--yellow-t)', color:'#5a4800' },
+    find: { bg:'var(--blue-t)',   color:'#1a2a5a' },
+    exp:  { bg:'var(--pink-t)',   color:'#5a1a28' }
+  };
+  const ruleCards = DATA.playbook.formats.map(f => {
+    const s = styleMap[f.style];
+    const steps = f.steps.map((st,i)=>`<div class="rule-step"><span class="rule-n">${i+1}</span><span>${st}</span></div>`).join('');
+    return `<div class="rule-card"><div class="rule-type" style="background:${s.bg};color:${s.color}">${f.type}</div>${steps}</div>`;
+  }).join('');
+
+  const alwaysTags = DATA.playbook.voiceAlways.map(t=>`<span class="vtag" style="background:var(--olive-t);color:#1a3a00">${t}</span>`).join('');
+  const neverTags  = DATA.playbook.voiceNever.map(t=>`<span class="vtag" style="background:var(--pink-t);color:#5a1a28">${t}</span>`).join('');
+
+  document.getElementById('view-playbook').innerHTML = `
     <div class="sh"><div><div class="sh-title">Writing Playbook</div><div class="sh-sub">Post structures · voice rules · never-do list</div></div></div>
-    <div class="rules-grid">
-      <div class="rule-card">
-        <div class="rule-type" style="background:var(--yellow-t);color:#5a4800">Observation post · Monday</div>
-        <div class="rule-step"><span class="rule-n">1</span><span>Hook — pattern or provocation</span></div>
-        <div class="rule-step"><span class="rule-n">2</span><span>The observation itself</span></div>
-        <div class="rule-step"><span class="rule-n">3</span><span>Pattern noticed across contexts</span></div>
-        <div class="rule-step"><span class="rule-n">4</span><span>Concrete example</span></div>
-        <div class="rule-step"><span class="rule-n">5</span><span>The insight / so what</span></div>
-        <div class="rule-step"><span class="rule-n">6</span><span>Discussion question to close</span></div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-type" style="background:var(--blue-t);color:#1a2a5a">Cool Find post · Thursday</div>
-        <div class="rule-step"><span class="rule-n">1</span><span>Hook — "Found something..."</span></div>
-        <div class="rule-step"><span class="rule-n">2</span><span>What it is (1 line)</span></div>
-        <div class="rule-step"><span class="rule-n">3</span><span>Why it matters (the signal)</span></div>
-        <div class="rule-step"><span class="rule-n">4</span><span>Specific use case</span></div>
-        <div class="rule-step"><span class="rule-n">5</span><span>Who should actually care</span></div>
-        <div class="rule-step"><span class="rule-n">6</span><span>CTA — link or question</span></div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-type" style="background:var(--pink-t);color:#5a1a28">Experiment post · Saturday/2w</div>
-        <div class="rule-step"><span class="rule-n">1</span><span>Hook — the unexpected result</span></div>
-        <div class="rule-step"><span class="rule-n">2</span><span>What I actually tried</span></div>
-        <div class="rule-step"><span class="rule-n">3</span><span>Why I tried it</span></div>
-        <div class="rule-step"><span class="rule-n">4</span><span>The process (brief)</span></div>
-        <div class="rule-step"><span class="rule-n">5</span><span>What worked / what failed</span></div>
-        <div class="rule-step"><span class="rule-n">6</span><span>Big lesson + CTA</span></div>
-      </div>
-    </div>
+    <div class="rules-grid">${ruleCards}</div>
     <div class="voice-panel">
       <div style="font-size:13px;font-weight:700;letter-spacing:-.01em;margin-bottom:14px">Voice Rules</div>
       <div class="voice-grid">
-        <div>
-          <div class="fl" style="margin-bottom:8px">Always be</div>
-          <span class="vtag" style="background:var(--olive-t);color:#1a3a00">sharp</span>
-          <span class="vtag" style="background:var(--olive-t);color:#1a3a00">thoughtful</span>
-          <span class="vtag" style="background:var(--olive-t);color:#1a3a00">strategic</span>
-          <span class="vtag" style="background:var(--olive-t);color:#1a3a00">concise</span>
-          <span class="vtag" style="background:var(--olive-t);color:#1a3a00">authentic</span>
-          <span class="vtag" style="background:var(--olive-t);color:#1a3a00">practical</span>
-          <span class="vtag" style="background:var(--olive-t);color:#1a3a00">high-signal</span>
-          <span class="vtag" style="background:var(--olive-t);color:#1a3a00">slightly opinionated</span>
-        </div>
-        <div>
-          <div class="fl" style="margin-bottom:8px">Never be</div>
-          <span class="vtag" style="background:var(--pink-t);color:#5a1a28">generic</span>
-          <span class="vtag" style="background:var(--pink-t);color:#5a1a28">motivational fluff</span>
-          <span class="vtag" style="background:var(--pink-t);color:#5a1a28">cringe growth content</span>
-          <span class="vtag" style="background:var(--pink-t);color:#5a1a28">vague</span>
-          <span class="vtag" style="background:var(--pink-t);color:#5a1a28">low-signal</span>
-        </div>
+        <div><div class="fl" style="margin-bottom:8px">Always be</div>${alwaysTags}</div>
+        <div><div class="fl" style="margin-bottom:8px">Never be</div>${neverTags}</div>
       </div>
-    </div>
-  </div>
+    </div>`;
+}
 
-</main>
-
-<!-- ════ RIGHT PANEL ════ -->
-<aside class="rpanel">
-  <div style="display:flex;align-items:center;justify-content:space-between">
-    <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">May 2025</div>
-    <div style="display:flex;align-items:center;gap:5px">
-      <div class="cal-nb">‹</div>
-      <div style="font-size:12px;font-weight:700">May 2025</div>
-      <div class="cal-nb">›</div>
-    </div>
-  </div>
-
-  <div>
-    <div class="cal-grid">
-      <div class="cal-dh">Mo</div><div class="cal-dh">Tu</div><div class="cal-dh">We</div><div class="cal-dh">Th</div><div class="cal-dh">Fr</div><div class="cal-dh">Sa</div><div class="cal-dh">Su</div>
-      <div class="cal-d cur posted">1</div>
-      <div class="cal-d">2</div><div class="cal-d">3</div>
-      <div class="cal-d cur posted">4</div>
-      <div class="cal-d">5</div><div class="cal-d">6</div><div class="cal-d">7</div>
-      <div class="cal-d cur posted">8</div>
-      <div class="cal-d">9</div><div class="cal-d">10</div>
-      <div class="cal-d cur posted">11</div>
-      <div class="cal-d">12</div>
-      <div class="cal-d cur posted">13</div>
-      <div class="cal-d">14</div>
-      <div class="cal-d cur posted">15</div>
-      <div class="cal-d">16</div>
-      <div class="cal-d today">17</div>
-      <div class="cal-d cur posted">18</div>
-      <div class="cal-d sched">19</div>
-      <div class="cal-d">20</div><div class="cal-d">21</div>
-      <div class="cal-d sched">22</div>
-      <div class="cal-d">23</div>
-      <div class="cal-d sched">24</div>
-      <div class="cal-d">25</div><div class="cal-d">26</div><div class="cal-d">27</div><div class="cal-d">28</div><div class="cal-d">29</div><div class="cal-d">30</div><div class="cal-d">31</div>
-    </div>
-  </div>
-
-  <button class="rp-add" onclick="go('inbox',null)">+ Add event</button>
-  <div class="rp-row2">
-    <div class="rp-icon-btn">↺</div>
-    <div class="rp-icon-btn">⊡</div>
-  </div>
-
-  <!-- Timeline -->
-  <div class="tl-head">
-    <div class="tl-date">May 17</div>
-    <div class="tl-filter">Today ▾</div>
-  </div>
-  <div class="tl-label">Today's schedule</div>
-  <div class="tl-item">
-    <div class="tl-time">09:00</div>
-    <div class="tl-dot obs">✍</div>
-    <div class="tl-info">
-      <div class="tl-title">Drafting: Spec assumptions post</div>
-      <div class="tl-sub">Ready to publish Mon 19</div>
-    </div>
-  </div>
-  <div class="tl-item">
-    <div class="tl-time">10:30</div>
-    <div class="tl-dot find">⌘</div>
-    <div class="tl-info">
-      <div class="tl-title">Review: Exa API notes</div>
-      <div class="tl-sub">Thu 22 scheduled</div>
-    </div>
-  </div>
-  <div class="tl-item">
-    <div class="tl-time">14:00</div>
-    <div class="tl-dot exp">◉</div>
-    <div class="tl-info">
-      <div class="tl-title">Experiment: Figma → Claude pipeline</div>
-      <div class="tl-sub">Draft 60% · finish today</div>
-    </div>
-  </div>
-  <div class="tl-item">
-    <div class="tl-time">16:00</div>
-    <div class="tl-dot meet">◈</div>
-    <div class="tl-info">
-      <div class="tl-title">Inbox triage + idea capture</div>
-      <div class="tl-sub">4 items waiting</div>
-    </div>
-  </div>
-  <button class="tl-view" onclick="go('library',null)">View posted library →</button>
-</aside>
-
-</div>
-
-<script>
+/* ═══════════════════════════════
+   NAVIGATION
+═══════════════════════════════ */
 const VIEWS = ['dashboard','inbox','pipeline','calendar','lab','library','draft','playbook'];
-const TITLES = {dashboard:'Dashboard',inbox:'Inbox',pipeline:'Editorial Pipeline',calendar:'Content Calendar',lab:'Experiment Lab',library:'Posted Library',draft:'AI Draft Studio',playbook:'Writing Playbook'};
 
 function go(id, el) {
-  VIEWS.forEach(v => {
-    const e = document.getElementById('view-'+v);
-    if(e) e.className = 'view';
-  });
+  VIEWS.forEach(v => { const e = document.getElementById('view-'+v); if(e) e.className='view'; });
   const t = document.getElementById('view-'+id);
   if(t) t.className = 'view active';
   document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
-  if(el) el.classList.add('active');
-  else {
-    document.querySelectorAll('.ni').forEach(n => {
-      if(n.textContent.trim().startsWith(TITLES[id]?.split(' ')[0])) n.classList.add('active');
-    });
-  }
+  if(el) { el.classList.add('active'); }
+  else { document.querySelectorAll('.ni').forEach(n => { if(n.getAttribute('onclick')?.includes(`'${id}'`)) n.classList.add('active'); }); }
 }
 
-// Inbox
+/* ═══════════════════════════════
+   INBOX ADD
+═══════════════════════════════ */
 function addInbox() {
-  const idea = document.getElementById('inbox-input').value.trim();
+  const idea   = document.getElementById('inbox-input').value.trim();
   if(!idea) return;
   const pillar = document.getElementById('inbox-pillar').value || 'Observation';
   const source = document.getElementById('inbox-source').value || '—';
-  const tbody = document.getElementById('inbox-body');
-  const n = String(tbody.children.length + 1).padStart(2,'0');
-  const pc = pillar === 'Observation' ? 'obs' : pillar === 'Cool Find' ? 'find' : 'exp';
-  const pv = pillar === 'Observation' ? 'observation' : pillar === 'Cool Find' ? 'find' : 'experiment';
-  const tr = document.createElement('tr');
+  const tbody  = document.getElementById('inbox-body');
+  const n      = String(tbody.children.length + 1).padStart(2,'0');
+  const pc     = LABELS[pillar];
+  const tr     = document.createElement('tr');
   tr.innerHTML = `
     <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${n}</td>
     <td style="font-size:11px;font-weight:500;max-width:200px">${idea}</td>
-    <td><span class="pill ${pc}">${pillar}</span></td>
+    <td>${pill(pc, pillar)}</td>
     <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${source}</td>
     <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Text Post</td>
-    <td><div class="prio"><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--yellow)"></span><span class="pd" style="background:var(--border)"></span><span class="pd" style="background:var(--border)"></span></div></td>
-    <td><div class="btn dark sm" onclick="draftFrom('${pv}','${idea.replace(/'/g,"\\'")}')">Draft →</div></td>`;
+    <td>${prio(3)}</td>
+    <td><div class="btn dark sm" onclick="draftFrom('${pc}','${idea.replace(/'/g,"\\'")}')">Draft →</div></td>`;
   tbody.insertBefore(tr, tbody.firstChild);
   document.getElementById('inbox-input').value = '';
 }
 
-// Draft templates
-const DRAFTS = {
-  observation:{
-    day:'Monday',
-    gen:(idea)=>`Most designers present solutions.\nThe great ones present tensions.\n\nHere's what I keep noticing in product reviews:\n\nThe room lights up when someone names the real constraint — not when they defend their design.\n\n→ Why this matters:\nDesign is a series of trade-offs, not a series of correct answers. When you frame your work as "here's what I decided," you invite judgment. When you frame it as "here are the tensions I navigated," you invite thinking.\n\nPattern I see in senior designers: they spend more time articulating the problem space than defending the solution space.\n\nExample: Instead of "I chose a bottom nav because mobile reach," try:\n"The tension here is discoverability vs thumb reach — we're trading one for the other, here's why that's worth it right now."\n\nThe insight: clarity of reasoning is more persuasive than clarity of presentation.\n\nWhat tensions do you find hardest to name clearly?`
-  },
-  find:{
-    day:'Thursday',
-    gen:(idea)=>`Found a GitHub tool that's been sitting quietly at 12k stars.\n\nRepomix — packs any repo into a single file optimized for LLM context.\n\nWhy it matters:\nEvery time I paste code into Claude or GPT, I'm manually cherry-picking. Repomix eliminates that. One command. Full repo as context.\n\nUse case that actually matters:\n→ Drop an unfamiliar codebase → instant architectural understanding\n→ Feed it to Claude for a full audit → no more file-by-file copying\n→ Stack multiple repos → understand dependencies in one shot\n\nWho should care:\nDesigners learning to code. Developers reviewing PRs at speed. PMs trying to understand what's actually in the codebase.\n\nThis is the kind of tool that quietly triples your throughput.\n\n→ github.com/yamadashy/repomix`
-  },
-  experiment:{
-    day:'Saturday (biweekly)',
-    gen:(idea)=>`I spent one afternoon building something I thought would take a week.\n\nWhat I tried:\nFigma frames → Claude → working interactive prototype. No hand-coding. No Webflow.\n\nWhy:\nI was skeptical that LLMs could bridge the design-to-prototype gap without losing fidelity. Wanted to test the ceiling.\n\nThe process:\n1. Exported Figma frames as annotated images\n2. Structured prompt: "You are a senior React developer. Build this component."\n3. Iterated 4 rounds in Cursor\n\nWhat worked:\nComponent logic was solid. Button states, hover effects, responsive behavior — all correct by round 2.\n\nWhat failed:\nTypography rendering. Claude consistently defaulted to system fonts and off-brand spacing. Manual correction every time.\n\nBig lesson:\nThe bottleneck isn't AI capability. It's the quality of your design handoff.\nGarbage annotations → garbage prototype.\n\nDesign clarity is now a forcing function for AI output quality.\n\nAre you using AI in your design-to-dev workflow? What's your biggest blocker?`
-  }
-};
-
+/* ═══════════════════════════════
+   DRAFT GENERATE
+═══════════════════════════════ */
 function draftFrom(pillar, idea) {
   go('draft', null);
-  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
-  document.querySelectorAll('.ni').forEach(n => { if(n.textContent.includes('Draft Studio')) n.classList.add('active'); });
-  if(idea) document.getElementById('draft-idea').value = idea;
-  document.getElementById('draft-pillar').value = pillar;
-  setTimeout(generateDraft, 120);
+  document.querySelectorAll('.ni').forEach(n => { if(n.getAttribute('onclick')?.includes("'draft'")) n.classList.add('active'); });
+  setTimeout(() => {
+    if(idea) document.getElementById('draft-idea').value = idea;
+    document.getElementById('draft-pillar').value = pillar;
+    setTimeout(generateDraft, 120);
+  }, 50);
 }
 
 function generateDraft() {
-  const idea = document.getElementById('draft-idea').value.trim();
   const pillar = document.getElementById('draft-pillar').value;
-  const out = document.getElementById('draft-out');
-  const dayEl = document.getElementById('post-day');
+  const out    = document.getElementById('draft-out');
+  const dayEl  = document.getElementById('post-day');
   out.innerHTML = '<div class="ld"><span class="ldd"></span><span class="ldd"></span><span class="ldd"></span></div>';
   setTimeout(() => {
-    const d = DRAFTS[pillar] || DRAFTS.observation;
+    const d    = DATA.drafts[pillar] || DATA.drafts.observation;
+    const text = d.gen();
     dayEl.textContent = '→ Post on ' + d.day;
-    const text = d.gen(idea);
     const lines = text.split('\n');
     out.innerHTML = `<span class="draft-hook">${lines[0]}</span>${lines.slice(1).join('\n')}`;
   }, 1100);
@@ -927,6 +1007,20 @@ function copyDraft() {
   btn.textContent = 'Copied!';
   setTimeout(()=>btn.textContent=orig, 1500);
 }
+
+/* ═══════════════════════════════
+   INIT — render everything
+═══════════════════════════════ */
+renderSidebar();
+renderRightPanel();
+renderDashboard();
+renderInbox();
+renderPipeline();
+renderCalendar();
+renderLab();
+renderLibrary();
+renderDraft();
+renderPlaybook();
 </script>
 </body>
 </html>
