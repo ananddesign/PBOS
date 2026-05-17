@@ -287,139 +287,59 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
 ═══════════════════════════════ */
 const DATA = {
   user: {
-    name: 'Anand',
-    tagline: 'Strategic Designer · Builder\nAI Explorer'
+    name: '',
+    tagline: ''
   },
   stats: {
-    published: 27,
-    publishedDelta: '+6 this month',
-    streakCurrent: '6w',
-    streakBest: '8w',
-    streakPostsThisMonth: 17
+    published: 0,
+    publishedDelta: '',
+    streakCurrent: '—',
+    streakBest: '—',
+    streakPostsThisMonth: 0
   },
   pillarMix: [
-    { label: 'Observation', count: 16 },
-    { label: 'Cool Find',   count: 9  },
-    { label: 'Experiment',  count: 2  }
+    { label: 'Observation', count: 0 },
+    { label: 'Cool Find',   count: 0 },
+    { label: 'Experiment',  count: 0 }
   ],
-  pillarWarning: 'Experiments underweight — target 1 every 2 weeks',
+  pillarWarning: '',
   pipeline: [
-    { stage: 'Inbox',     count: 4 },
-    { stage: 'Exploring', count: 2 },
-    { stage: 'Drafting',  count: 1 },
-    { stage: 'Ready',     count: 2 },
-    { stage: 'Scheduled', count: 3 }
+    { stage: 'Inbox',     count: 0 },
+    { stage: 'Exploring', count: 0 },
+    { stage: 'Drafting',  count: 0 },
+    { stage: 'Ready',     count: 0 },
+    { stage: 'Scheduled', count: 0 }
   ],
   nextPost: {
-    title:  'The spec is never the problem. The assumptions under it are.',
-    date:   'Monday, May 19',
-    pillar: 'Observation',
-    status: 'ready',
-    tags:   ['Design thinking', 'Strategy', 'Text post'],
-    hook:   'Opens with a pattern notice from client work → reframes spec reviews',
-    cta:    'What\'s the last assumption you caught too late?'
+    title:  '',
+    date:   '',
+    pillar: '',
+    status: '',
+    tags:   [],
+    hook:   '',
+    cta:    ''
   },
-  recentPosts: [
-    { title: 'Why I stopped calling myself a UX designer', pillar: 'obs',  date: 'May 15', perf: 85 },
-    { title: 'Claude as design critique partner',           pillar: 'exp',  date: 'May 13', perf: 92 },
-    { title: 'Bolt.new + Supabase full stack in 20min',    pillar: 'find', date: 'May 11', perf: 70 },
-    { title: '"Alignment" = nobody owns the decision',     pillar: 'obs',  date: 'May 8',  perf: 78 },
-    { title: 'Perplexity Deep Research for PMs',           pillar: 'find', date: 'May 4',  perf: 62 },
-    { title: 'The 3 prompts I use every design sprint',    pillar: 'obs',  date: 'May 1',  perf: 55 }
-  ],
-  inbox: [
-    { idea: 'Most designers present solutions. The great ones present tensions.', pillar: 'Observation', source: 'Work',        format: 'Text Post',  priority: 4 },
-    { idea: 'Repomix — pack any GitHub repo into a single LLM context file',      pillar: 'Cool Find',   source: 'GitHub',      format: 'Screenshot', priority: 5 },
-    { idea: 'Built a Figma → Claude → prototype pipeline in one afternoon',        pillar: 'Experiment',  source: 'Claude',      format: 'Breakdown',  priority: 3 },
-    { idea: 'AI product strategy ≠ AI feature roadmap. Nobody talks about this.', pillar: 'Observation', source: 'Observation', format: 'Text Post',  priority: 4 }
-  ],
+  recentPosts: [],
+  inbox: [],
   kanban: {
-    Inbox:     [
-      { title: 'Design tensions vs. solutions', pillar: 'obs',  format: 'Text',       priority: 4 },
-      { title: 'Repomix GitHub tool',            pillar: 'find', format: 'Screenshot', priority: 5 }
-    ],
-    Exploring: [
-      { title: 'AI strategy ≠ AI roadmap gap',      pillar: 'obs',  format: 'Text'      },
-      { title: 'uv — Python pkg manager 10x faster', pillar: 'find', format: 'Breakdown' }
-    ],
-    Drafting:  [
-      { title: 'Figma → Claude → prototype pipeline', pillar: 'exp', format: 'Breakdown' }
-    ],
-    Ready:     [
-      { title: 'The spec is never the problem',    pillar: 'obs',  format: 'Text'       },
-      { title: 'Cursor composer multi-file edits', pillar: 'find', format: 'Screenshot' }
-    ],
-    Scheduled: [
-      { title: 'The spec is never the problem',   pillar: 'obs',  format: 'Text',      date: 'May 19' },
-      { title: 'Exa — AI-native search API',      pillar: 'find', format: 'Breakdown', date: 'May 22' },
-      { title: 'Vibe coding design system audit', pillar: 'exp',  format: 'Breakdown', date: 'May 24' }
-    ],
-    Posted:    [
-      { title: 'Why I stopped calling myself a UX designer', pillar: 'obs',  date: 'May 15' },
-      { title: 'Perplexity Deep Research for PMs',           pillar: 'find', date: 'May 4'  }
-    ],
-    Repurpose: [
-      { title: 'Claude as design critique partner', pillar: 'exp', format: 'Carousel?' }
-    ]
+    Inbox:     [],
+    Exploring: [],
+    Drafting:  [],
+    Ready:     [],
+    Scheduled: [],
+    Posted:    [],
+    Repurpose: []
   },
   calendar: {
-    month: 'May 2025',
-    today: 17,
-    startWeekday: 3,
-    totalDays: 31,
-    events: [
-      { day: 1,  title: 'Why I stopped calling myself a UX designer', pillar: 'obs'   },
-      { day: 4,  title: 'Perplexity Deep Research for PMs',           pillar: 'find'  },
-      { day: 8,  title: 'Alignment = nobody owns the decision',       pillar: 'obs'   },
-      { day: 11, title: 'Bolt.new + Supabase full stack',             pillar: 'find'  },
-      { day: 13, title: 'Claude as design critique — build log',      pillar: 'exp'   },
-      { day: 15, title: 'User research ≠ confirmation bias',          pillar: 'obs'   },
-      { day: 18, title: 'Cursor composer multi-file edits',           pillar: 'find'  },
-      { day: 19, title: 'The spec is never the problem →',            pillar: 'sched' },
-      { day: 22, title: 'Exa — AI-native search API →',              pillar: 'sched' },
-      { day: 24, title: 'Vibe coding design system audit →',         pillar: 'sched' }
-    ]
+    month: '',
+    today: 0,
+    startWeekday: 0,
+    totalDays: 0,
+    events: []
   },
-  library: [
-    { title: 'Why I stopped calling myself a UX designer', pillar: 'obs',  format: 'Text',       date: 'May 15', perf: 85, repurpose: true,  notes: 'High engagement' },
-    { title: 'Claude as design critique partner',           pillar: 'exp',  format: 'Breakdown',  date: 'May 13', perf: 92, repurpose: true,  notes: 'Best performer'  },
-    { title: 'Bolt.new + Supabase full stack in 20min',    pillar: 'find', format: 'Screenshot', date: 'May 11', perf: 70, repurpose: false, notes: '—'              },
-    { title: '"Alignment" means nobody owns the decision', pillar: 'obs',  format: 'Text',       date: 'May 8',  perf: 78, repurpose: false, notes: '—'              },
-    { title: 'Perplexity Deep Research for PMs',           pillar: 'find', format: 'Breakdown',  date: 'May 4',  perf: 62, repurpose: false, notes: '—'              },
-    { title: 'The 3 prompts I use every design sprint',    pillar: 'obs',  format: 'Text',       date: 'May 1',  perf: 55, repurpose: false, notes: '—'              }
-  ],
-  experiments: [
-    {
-      title: 'Claude as a design critique partner',
-      date: 'May 13', status: 'posted',
-      description: 'Prompted Claude to review a mid-fi prototype like a senior designer. Compared output to actual team critique session.',
-      lesson: '✓ Key lesson: framing matters more than the design itself',
-      lessonColor: '#2a4a00',
-      draftIdea: 'Claude as design critique partner'
-    },
-    {
-      title: 'Vibe coding a design system audit tool',
-      date: 'May 27', status: 'scheduled',
-      description: 'Used Claude + Cursor to build a script that scans a Figma file and flags inconsistencies. Zero code experience needed.',
-      lesson: '→ In progress: writing the build log',
-      lessonColor: '#5a4800',
-      draftIdea: 'Vibe coding a design system audit tool with Claude and Cursor'
-    },
-    {
-      title: 'Figma → Claude → working prototype in one afternoon',
-      date: null, status: 'drafting',
-      description: 'Exported Figma frames as context for Claude. Generated interactive prototype from component descriptions alone.',
-      lesson: '→ Draft 60% complete',
-      lessonColor: '#1a2a5a',
-      draftIdea: 'Figma to Claude to prototype pipeline in one afternoon'
-    }
-  ],
-  timeline: [
-    { time: '09:00', type: 'obs',  icon: '✍', title: 'Drafting: Spec assumptions post',     sub: 'Ready to publish Mon 19'  },
-    { time: '10:30', type: 'find', icon: '⌘', title: 'Review: Exa API notes',               sub: 'Thu 22 scheduled'         },
-    { time: '14:00', type: 'exp',  icon: '◉', title: 'Experiment: Figma → Claude pipeline', sub: 'Draft 60% · finish today' },
-    { time: '16:00', type: 'meet', icon: '◈', title: 'Inbox triage + idea capture',         sub: '4 items waiting'          }
-  ],
+  library: [],
+  experiments: [],
+  timeline: [],
   cadence: [
     { color: '#E9D94C', label: 'Mon → Observation'  },
     { color: '#B8CCF0', label: 'Thu → Cool Find'    },
