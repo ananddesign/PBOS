@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Personal Brand OS</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -20,8 +21,6 @@
 *{font-family:var(--sans)}
 body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .app{display:grid;grid-template-columns:230px 1fr 290px;min-height:100vh}
-
-/* SIDEBAR */
 .sidebar{background:var(--sb);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
 .logo{padding:22px 20px 20px;border-bottom:1px solid rgba(255,255,255,.07)}
 .logo-name{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.04em}
@@ -34,22 +33,18 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .ni.active{background:rgba(255,255,255,.1);color:#fff;font-weight:600}
 .ni-icon{font-size:13px;width:18px;text-align:center;flex-shrink:0}
 .nb{margin-left:auto;font-size:9px;font-family:var(--mono);padding:2px 7px;border-radius:20px;background:var(--yellow);color:#2a2800;font-weight:600}
-.nb-g{background:var(--olive);color:#1a3200}
+.nb-g{background:var(--olive)!important;color:#1a3200!important}
 .sfooter{padding:14px 10px;border-top:1px solid rgba(255,255,255,.07)}
 .ccard{background:rgba(255,255,255,.05);border-radius:12px;padding:12px 14px}
 .ctitle{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:10px;font-weight:600}
 .crow{font-size:11px;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:7px;margin-bottom:5px;font-weight:500}
 .crow:last-child{margin-bottom:0}
 .cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-
-/* MAIN */
 .main{display:flex;flex-direction:column;padding:26px 22px;min-height:100vh}
 .view{display:none}.view.active{display:flex;flex-direction:column;gap:14px}
-
-/* topbar */
 .topbar{display:flex;align-items:center;gap:10px}
 .search-wrap{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:50px;padding:7px 16px;flex:0 0 auto;width:220px}
-.search-icon{color:var(--muted);font-size:13px;flex-shrink:0}
+.search-icon{color:var(--muted);font-size:13px}
 .search-input{border:none;outline:none;font-size:12px;color:var(--text);background:transparent;flex:1;font-weight:500}
 .search-input::placeholder{color:var(--muted)}
 .fpills{display:flex;gap:5px}
@@ -58,21 +53,15 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .fpill.off{background:#fff;color:var(--muted);border:1.5px solid var(--border)}
 .tbbtns{display:flex;gap:7px;margin-left:auto}
 .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 15px;border-radius:50px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all .13s;user-select:none}
-.btn.dark{background:var(--text);color:#fff}
-.btn.dark:hover{opacity:.82}
-.btn.light{background:#fff;color:var(--text);border:1.5px solid var(--border)}
-.btn.light:hover{background:var(--bg)}
+.btn.dark{background:var(--text);color:#fff}.btn.dark:hover{opacity:.82}
+.btn.light{background:#fff;color:var(--text);border:1.5px solid var(--border)}.btn.light:hover{background:var(--bg)}
 .btn.sm{padding:6px 13px;font-size:10px}
-
-/* greeting */
+.btn:disabled{opacity:.4;cursor:not-allowed}
 .greeting-title{font-size:28px;font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-bottom:5px}
 .greeting-sub{font-size:12px;color:var(--muted);line-height:1.55;max-width:500px;font-weight:500}
-
-/* KPI row */
 .kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .kpi-card{border-radius:20px;padding:20px 22px;overflow:hidden;position:relative;min-height:160px;display:flex;flex-direction:column;justify-content:space-between}
-.kpi-card.yellow{background:var(--yellow)}
-.kpi-card.pink{background:var(--pink)}
+.kpi-card.yellow{background:var(--yellow)}.kpi-card.pink{background:var(--pink)}
 .kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.55;margin-bottom:7px}
 .kpi-val{font-size:46px;font-weight:800;letter-spacing:-.05em;line-height:1}
 .kpi-sub{font-size:11px;font-weight:500;opacity:.55;margin-top:5px}
@@ -81,12 +70,9 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .kv{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1}
 .kl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;opacity:.5;margin-top:2px}
 .kpi-deco{position:absolute;right:-8px;bottom:-8px;opacity:.15}
-
-/* Mid row */
 .mid-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .mc{border-radius:20px;padding:18px 20px;overflow:hidden;position:relative}
-.mc.olive{background:var(--olive)}
-.mc.blue{background:var(--blue)}
+.mc.olive{background:var(--olive)}.mc.blue{background:var(--blue)}
 .mc-title{font-size:12px;font-weight:700;letter-spacing:-.01em;margin-bottom:13px;opacity:.75}
 .pipe-row{display:flex;align-items:center;gap:9px;margin-bottom:7px}
 .pipe-row:last-child{margin-bottom:0}
@@ -102,8 +88,6 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .pil-track{flex:1;height:5px;background:rgba(0,0,0,.12);border-radius:3px;overflow:hidden}
 .pil-fill{height:100%;border-radius:3px;background:rgba(0,0,0,.35)}
 .pil-n{font-family:var(--mono);font-size:10px;width:14px;text-align:right;opacity:.65}
-
-/* Bot row */
 .bot-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .wcard{background:#fff;border-radius:20px;padding:18px}
 .wcard-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -112,14 +96,12 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .post-item{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--border)}
 .post-item:last-child{border-bottom:none}
 .picon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
-.picon.obs{background:var(--yellow-t)}
-.picon.find{background:var(--teal-t)}
-.picon.exp{background:var(--pink-t)}
+.picon.obs{background:var(--yellow-t)}.picon.find{background:var(--teal-t)}.picon.exp{background:var(--pink-t)}
 .pinfo{flex:1;min-width:0}
-.ptitle{font-size:11px;font-weight:600;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptitle{font-size:11px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .psub{font-size:9px;color:var(--muted);margin-top:2px;font-weight:500}
 .pright{text-align:right;flex-shrink:0}
-.ptag{font-size:9px;font-family:var(--mono);color:var(--muted);background:var(--bg);padding:3px 8px;border-radius:20px;font-weight:500;white-space:nowrap}
+.ptag{font-size:9px;font-family:var(--mono);color:var(--muted);background:var(--bg);padding:3px 8px;border-radius:20px;font-weight:500}
 .pbar{height:3px;width:48px;background:var(--border);border-radius:2px;margin-top:5px;margin-left:auto}
 .pfill{height:100%;border-radius:2px;background:var(--olive)}
 .detail-card{background:var(--pink);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px}
@@ -132,15 +114,11 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .dc-key{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;opacity:.45;padding-top:1px}
 .dc-val{font-weight:500;opacity:.8;line-height:1.45}
 .dc-divider{height:1px;background:rgba(0,0,0,.08)}
-.dc-btn{background:rgba(0,0,0,.85);color:#fff;border:none;border-radius:12px;padding:10px;font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:opacity .13s}
-.dc-btn:hover{opacity:.8}
-
-/* RIGHT PANEL */
+.dc-btn{background:rgba(0,0,0,.85);color:#fff;border:none;border-radius:12px;padding:10px;font-size:11px;font-weight:600;cursor:pointer;text-align:center}
 .rpanel{background:var(--bg);border-left:1.5px solid var(--border);padding:26px 18px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow-y:auto}
 .cal-head{display:flex;align-items:center;justify-content:space-between}
 .cal-navs{display:flex;gap:4px;align-items:center}
-.cal-nb{width:26px;height:26px;background:#fff;border:1.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--muted);transition:all .12s}
-.cal-nb:hover{border-color:var(--text);color:var(--text)}
+.cal-nb{width:26px;height:26px;background:#fff;border:1.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--muted)}
 .cal-month-label{font-size:12px;font-weight:700;margin:0 6px}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .cal-dh{font-size:8px;font-weight:700;color:var(--muted);text-align:center;padding:4px 0;text-transform:uppercase;letter-spacing:.05em}
@@ -151,47 +129,31 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .cal-d.posted{color:var(--text);font-weight:700;position:relative}
 .cal-d.posted::after{content:'';display:block;width:4px;height:4px;border-radius:50%;background:var(--olive);position:absolute;margin-top:18px}
 .cal-d.sched{background:var(--yellow-t);color:#5a4800;font-weight:700}
-.rp-add{background:var(--text);color:#fff;border:none;border-radius:12px;padding:10px;font-size:12px;font-weight:600;cursor:pointer;width:100%;transition:opacity .13s}
-.rp-add:hover{opacity:.82}
+.rp-add{background:var(--text);color:#fff;border:none;border-radius:12px;padding:10px;font-size:12px;font-weight:600;cursor:pointer;width:100%}
 .rp-row2{display:flex;gap:6px}
-.rp-icon-btn{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
-.rp-icon-btn:hover{border-color:var(--text)}
+.rp-icon-btn{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .tl-head{display:flex;align-items:center;justify-content:space-between}
 .tl-date{font-size:14px;font-weight:800;letter-spacing:-.02em}
 .tl-filter{font-size:9px;font-weight:700;background:var(--text);color:#fff;padding:4px 10px;border-radius:20px;cursor:pointer}
 .tl-label{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:0 0 6px}
 .tl-item{display:flex;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);align-items:flex-start}
 .tl-item:last-child{border-bottom:none}
-.tl-time{font-size:9px;font-family:var(--mono);color:var(--muted);width:30px;flex-shrink:0;padding-top:4px;font-weight:500;line-height:1.2}
+.tl-time{font-size:9px;font-family:var(--mono);color:var(--muted);width:30px;flex-shrink:0;padding-top:4px;font-weight:500}
 .tl-dot{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
-.tl-dot.obs{background:var(--yellow-t)}
-.tl-dot.find{background:var(--blue-t)}
-.tl-dot.exp{background:var(--pink-t)}
-.tl-dot.meet{background:var(--olive-t)}
+.tl-dot.obs{background:var(--yellow-t)}.tl-dot.find{background:var(--blue-t)}.tl-dot.exp{background:var(--pink-t)}.tl-dot.meet{background:var(--olive-t)}
 .tl-info{flex:1;min-width:0}
-.tl-title{font-size:11px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:1px}
+.tl-title{font-size:11px;font-weight:600;line-height:1.3;margin-bottom:1px}
 .tl-sub{font-size:9px;color:var(--muted);font-weight:500}
 .tl-view{background:var(--text);color:#fff;border:none;border-radius:10px;padding:9px;font-size:11px;font-weight:600;cursor:pointer;width:100%}
-
-/* PILLS */
 .pill{font-size:8px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px;font-weight:600}
-.pill.obs{background:var(--yellow-t);color:#5a4800}
-.pill.find{background:var(--teal-t);color:#006560}
-.pill.exp{background:var(--pink-t);color:#6B1030}
+.pill.obs{background:var(--yellow-t);color:#5a4800}.pill.find{background:var(--teal-t);color:#006560}.pill.exp{background:var(--pink-t);color:#6B1030}
 .spill{display:inline-flex;align-items:center;font-size:8px;font-family:var(--mono);padding:2px 7px;border-radius:20px;letter-spacing:.05em;font-weight:600}
-.spill.obs{background:var(--yellow-t);color:#5a4800}
-.spill.find{background:var(--teal-t);color:#006560}
-.spill.exp{background:var(--pink-t);color:#6B1030}
+.spill.obs{background:var(--yellow-t);color:#5a4800}.spill.find{background:var(--teal-t);color:#006560}.spill.exp{background:var(--pink-t);color:#6B1030}
 .status-pill{font-size:9px;font-family:var(--mono);padding:3px 9px;border-radius:20px;font-weight:600}
-.status-pill.posted{background:var(--olive-t);color:#2a4a00}
-.status-pill.scheduled{background:var(--yellow-t);color:#4a3a00}
-.status-pill.drafting{background:var(--blue-t);color:#1a2a5a}
-.status-pill.inbox{background:rgba(0,0,0,.06);color:var(--muted)}
-.status-pill.exploring{background:var(--teal-t);color:#006560}
-.status-pill.repurpose{background:var(--pink-t);color:#6B1030}
+.status-pill.posted{background:var(--olive-t);color:#2a4a00}.status-pill.scheduled{background:var(--yellow-t);color:#4a3a00}
+.status-pill.drafting{background:var(--blue-t);color:#1a2a5a}.status-pill.inbox{background:rgba(0,0,0,.06);color:var(--muted)}
+.status-pill.exploring{background:var(--teal-t);color:#006560}.status-pill.repurpose{background:var(--pink-t);color:#6B1030}
 .status-pill.ready{background:var(--olive-t);color:#2a4a00}
-
-/* NON-DASHBOARD */
 .sh{display:flex;align-items:center;justify-content:space-between}
 .sh-title{font-size:20px;font-weight:800;letter-spacing:-.03em}
 .sh-sub{font-size:11px;color:var(--muted);font-weight:500;margin-top:2px}
@@ -210,8 +172,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .kcol-name{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
 .kcol-n{font-size:9px;background:var(--bg);color:var(--muted);padding:2px 7px;border-radius:20px;font-family:var(--mono)}
 .kcard{background:var(--bg);border-radius:11px;padding:9px;margin-bottom:6px;cursor:pointer;transition:all .12s;border:1.5px solid transparent}
-.kcard:hover{border-color:var(--border);background:#fff}
-.kcard:last-child{margin-bottom:0}
+.kcard:hover{border-color:var(--border);background:#fff}.kcard:last-child{margin-bottom:0}
 .kcard-title{font-size:11px;color:var(--text);line-height:1.35;margin-bottom:6px;font-weight:500}
 .kcard-meta{display:flex;align-items:center;gap:5px}
 .kcard-fmt{font-size:9px;color:var(--muted);font-family:var(--mono)}
@@ -220,19 +181,17 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .kcard.repurpose{border-color:rgba(242,184,198,.5);background:rgba(242,184,198,.07)}
 .cal-view-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .cv-dh{font-size:9px;font-weight:600;color:var(--muted);text-align:center;padding:5px 0;text-transform:uppercase;letter-spacing:.05em}
-.cv-d{background:#fff;border-radius:12px;padding:7px;min-height:80px;cursor:pointer;transition:border .12s;border:1.5px solid transparent}
+.cv-d{background:#fff;border-radius:12px;padding:7px;min-height:80px;cursor:pointer;border:1.5px solid transparent}
 .cv-d:hover{border-color:var(--border)}
 .cv-d.today{border-color:var(--pink);background:rgba(242,184,198,.06)}
 .cv-d.empty{opacity:0;pointer-events:none}
 .cv-num{font-size:9px;font-family:var(--mono);color:var(--muted);margin-bottom:5px;font-weight:500}
 .cv-post{font-size:9px;padding:3px 5px;border-radius:6px;margin-bottom:3px;line-height:1.3;font-weight:600}
-.cv-post.obs{background:var(--yellow-t);color:#5a4800}
-.cv-post.find{background:var(--blue-t);color:#1a2a5a}
-.cv-post.exp{background:var(--pink-t);color:#5a1a28}
-.cv-post.sched{background:var(--olive-t);color:#2a4a00}
-.exp-card{background:#fff;border-radius:16px;padding:16px;display:grid;grid-template-columns:1fr auto;gap:12px;cursor:pointer;transition:all .12s;border:1.5px solid transparent}
+.cv-post.obs{background:var(--yellow-t);color:#5a4800}.cv-post.find{background:var(--blue-t);color:#1a2a5a}
+.cv-post.exp{background:var(--pink-t);color:#5a1a28}.cv-post.sched{background:var(--olive-t);color:#2a4a00}
+.exp-card{background:#fff;border-radius:16px;padding:16px;display:grid;grid-template-columns:1fr auto;gap:12px;cursor:pointer;border:1.5px solid transparent}
 .exp-card:hover{border-color:var(--border)}
-.exp-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-.01em}
+.exp-title{font-size:13px;font-weight:700;margin-bottom:4px;letter-spacing:-.01em}
 .exp-meta{font-size:11px;color:var(--muted);line-height:1.5;font-weight:500}
 .exp-note{font-size:10px;font-family:var(--mono);margin-top:7px;font-weight:500}
 .draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -244,7 +203,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .fg{margin-bottom:13px}
 .fl{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
 textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
-.draft-out{background:var(--bg);border-radius:12px;padding:14px;font-size:12px;line-height:1.75;color:var(--text);min-height:170px;white-space:pre-wrap;font-weight:500;border:1.5px solid var(--border)}
+.draft-out{background:var(--bg);border-radius:12px;padding:14px;font-size:12px;line-height:1.75;min-height:170px;white-space:pre-wrap;font-weight:500;border:1.5px solid var(--border)}
 .draft-hook{font-weight:800;font-size:13px;display:block;margin-bottom:8px;letter-spacing:-.02em}
 .ld{display:inline-flex;gap:5px;align-items:center}
 .ldd{width:6px;height:6px;border-radius:50%;background:var(--text);animation:pulse 1.2s ease-in-out infinite}
@@ -258,8 +217,13 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
 .voice-panel{background:#fff;border-radius:18px;padding:18px}
 .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .vtag{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;margin:0 4px 5px 0;display:inline-block}
-.prio{display:flex;gap:3px}
-.pd{width:5px;height:5px;border-radius:50%}
+.prio{display:flex;gap:3px}.pd{width:5px;height:5px;border-radius:50%}
+.empty-state{text-align:center;padding:32px 16px;color:var(--muted)}
+.empty-state .es-icon{font-size:22px;margin-bottom:8px}
+.empty-state .es-text{font-size:12px;font-weight:500}
+.loading{text-align:center;padding:60px;color:var(--muted);font-size:12px;font-weight:500}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:10px 18px;border-radius:12px;font-size:12px;font-weight:600;z-index:999;opacity:0;transform:translateY(8px);transition:all .2s}
+.toast.show{opacity:1;transform:translateY(0)}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
@@ -269,7 +233,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
 <div class="app">
   <aside class="sidebar" id="sidebar"></aside>
   <main class="main">
-    <div id="view-dashboard" class="view active"></div>
+    <div id="view-dashboard" class="view active"><div class="loading">Loading...</div></div>
     <div id="view-inbox"     class="view"></div>
     <div id="view-pipeline"  class="view"></div>
     <div id="view-calendar"  class="view"></div>
@@ -278,188 +242,207 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
     <div id="view-draft"     class="view"></div>
     <div id="view-playbook"  class="view"></div>
   </main>
-  <aside class="rpanel" id="rpanel"></aside>
+  <aside class="rpanel" id="rpanel"><div class="loading">Loading...</div></aside>
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
-/* ═══════════════════════════════
-   DATA — edit here to update everything
-═══════════════════════════════ */
-const DATA = {
-  user: {
-    name: '',
-    tagline: ''
-  },
-  stats: {
-    published: 0,
-    publishedDelta: '',
-    streakCurrent: '—',
-    streakBest: '—',
-    streakPostsThisMonth: 0
-  },
-  pillarMix: [
-    { label: 'Observation', count: 0 },
-    { label: 'Cool Find',   count: 0 },
-    { label: 'Experiment',  count: 0 }
-  ],
-  pillarWarning: '',
-  pipeline: [
-    { stage: 'Inbox',     count: 0 },
-    { stage: 'Exploring', count: 0 },
-    { stage: 'Drafting',  count: 0 },
-    { stage: 'Ready',     count: 0 },
-    { stage: 'Scheduled', count: 0 }
-  ],
-  nextPost: {
-    title:  '',
-    date:   '',
-    pillar: '',
-    status: '',
-    tags:   [],
-    hook:   '',
-    cta:    ''
-  },
-  recentPosts: [],
-  inbox: [],
-  kanban: {
-    Inbox:     [],
-    Exploring: [],
-    Drafting:  [],
-    Ready:     [],
-    Scheduled: [],
-    Posted:    [],
-    Repurpose: []
-  },
-  calendar: {
-    month: '',
-    today: 0,
-    startWeekday: 0,
-    totalDays: 0,
-    events: []
-  },
-  library: [],
-  experiments: [],
-  timeline: [],
-  cadence: [
-    { color: '#E9D94C', label: 'Mon → Observation'  },
-    { color: '#B8CCF0', label: 'Thu → Cool Find'    },
-    { color: '#F2B8C6', label: 'Sat/2w → Experiment'}
-  ],
-  navViews: [
-    { id: 'dashboard', icon: '⬡', label: 'Dashboard'          },
-    { id: 'inbox',     icon: '✦', label: 'Inbox',     badge: 'inbox'   },
-    { id: 'pipeline',  icon: '◈', label: 'Editorial Pipeline'  },
-    { id: 'calendar',  icon: '◻', label: 'Content Calendar'    },
-    { id: 'lab',       icon: '◎', label: 'Experiment Lab', badge: 'lab' },
-    { id: 'library',   icon: '◑', label: 'Posted Library', badge: 'library' }
-  ],
-  navTools: [
-    { id: 'draft',    icon: '✐', label: 'AI Draft Studio'  },
-    { id: 'playbook', icon: '◧', label: 'Writing Playbook' }
-  ],
-  playbook: {
-    formats: [
-      { type: 'Observation post · Monday',    style: 'obs',
-        steps: ['Hook — pattern or provocation','The observation itself','Pattern noticed across contexts','Concrete example','The insight / so what','Discussion question to close'] },
-      { type: 'Cool Find post · Thursday',    style: 'find',
-        steps: ['Hook — "Found something..."','What it is (1 line)','Why it matters (the signal)','Specific use case','Who should actually care','CTA — link or question'] },
-      { type: 'Experiment post · Saturday/2w', style: 'exp',
-        steps: ['Hook — the unexpected result','What I actually tried','Why I tried it','The process (brief)','What worked / what failed','Big lesson + CTA'] }
-    ],
-    voiceAlways: ['sharp','thoughtful','strategic','concise','authentic','practical','high-signal','slightly opinionated'],
-    voiceNever:  ['generic','motivational fluff','cringe growth content','vague','low-signal']
-  },
-  drafts: {
-    observation: {
-      day: 'Monday',
-      gen: () => `Most designers present solutions.\nThe great ones present tensions.\n\nHere's what I keep noticing in product reviews:\n\nThe room lights up when someone names the real constraint — not when they defend their design.\n\n→ Why this matters:\nDesign is a series of trade-offs, not a series of correct answers. When you frame your work as "here's what I decided," you invite judgment. When you frame it as "here are the tensions I navigated," you invite thinking.\n\nPattern I see in senior designers: they spend more time articulating the problem space than defending the solution space.\n\nThe insight: clarity of reasoning is more persuasive than clarity of presentation.\n\nWhat tensions do you find hardest to name clearly?`
-    },
-    find: {
-      day: 'Thursday',
-      gen: () => `Found a GitHub tool sitting quietly at 12k stars.\n\nRepomix — packs any repo into a single file optimized for LLM context.\n\nWhy it matters:\nEvery time I paste code into Claude or GPT, I'm manually cherry-picking. Repomix eliminates that. One command. Full repo as context.\n\nUse case that actually matters:\n→ Drop an unfamiliar codebase → instant architectural understanding\n→ Feed it to Claude for a full audit → no more file-by-file copying\n→ Stack multiple repos → understand dependencies in one shot\n\nThis is the kind of tool that quietly triples your throughput.\n\n→ github.com/yamadashy/repomix`
-    },
-    experiment: {
-      day: 'Saturday (biweekly)',
-      gen: () => `I spent one afternoon building something I thought would take a week.\n\nWhat I tried:\nFigma frames → Claude → working interactive prototype. No hand-coding. No Webflow.\n\nWhat worked:\nComponent logic was solid. Button states, hover effects, responsive behavior — all correct by round 2.\n\nWhat failed:\nTypography rendering. Claude consistently defaulted to system fonts and off-brand spacing.\n\nBig lesson:\nThe bottleneck isn't AI capability. It's the quality of your design handoff.\nGarbage annotations → garbage prototype.\n\nAre you using AI in your design-to-dev workflow? What's your biggest blocker?`
-    }
-  }
-};
+/* ─── SUPABASE ─── */
+const SB_URL = 'https://jmsaxwqisykrlnlifsjp.supabase.co'
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imptc2F4d3Fpc3lrcmxubGlmc2pwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMzY1NjcsImV4cCI6MjA5NDYxMjU2N30.QMVWUTZP1b6Z6XH8qV5jYLas6NxaYIkgNuQd-nAdqos'
+const sb = supabase.createClient(SB_URL, SB_KEY)
 
-/* ═══════════════════════════════
-   HELPERS
-═══════════════════════════════ */
-const ICONS  = { obs: '✍', find: '⌘', exp: '◉' };
-const LABELS = { obs: 'Observation', find: 'Cool Find', exp: 'Experiment',
-                 Observation: 'obs', 'Cool Find': 'find', Experiment: 'exp' };
+/* ─── STATE ─── */
+let S = { profile:{}, inbox:[], pipeline:[], library:[], experiments:[], timeline:[] }
 
-function pill(p, label)  { return `<span class="pill ${p}">${label||LABELS[p]||p}</span>`; }
-function spill(p)        { return `<span class="spill ${p}">${LABELS[p]||p}</span>`; }
-function statusPill(s)   { return `<span class="status-pill ${s}">${s}</span>`; }
-function prio(n, max=5)  { return `<div class="prio">${Array.from({length:max},(_,i)=>`<span class="pd" style="background:${i<n?'var(--yellow)':'var(--border)'}"></span>`).join('')}</div>`; }
-function getGreeting()   { const h=new Date().getHours(); return h<12?'Good morning':h<17?'Good afternoon':'Good evening'; }
+/* ─── STATIC CONFIG ─── */
+const CADENCE = [
+  { color:'#E9D94C', label:'Mon → Observation'   },
+  { color:'#B8CCF0', label:'Thu → Cool Find'      },
+  { color:'#F2B8C6', label:'Sat/2w → Experiment'  }
+]
+const NAV_VIEWS = [
+  { id:'dashboard', icon:'⬡', label:'Dashboard'                              },
+  { id:'inbox',     icon:'✦', label:'Inbox',            badge:'inbox'        },
+  { id:'pipeline',  icon:'◈', label:'Editorial Pipeline'                     },
+  { id:'calendar',  icon:'◻', label:'Content Calendar'                       },
+  { id:'lab',       icon:'◎', label:'Experiment Lab',   badge:'lab'          },
+  { id:'library',   icon:'◑', label:'Posted Library',   badge:'library', g:1 }
+]
+const NAV_TOOLS = [
+  { id:'draft',    icon:'✐', label:'AI Draft Studio'  },
+  { id:'playbook', icon:'◧', label:'Writing Playbook' }
+]
+const PLAYBOOK = {
+  formats: [
+    { type:'Observation post · Monday',   style:'obs',
+      steps:['Hook — pattern or provocation','The observation itself','Pattern noticed across contexts','Concrete example','The insight / so what','Discussion question to close'] },
+    { type:'Cool Find post · Thursday',   style:'find',
+      steps:['Hook — "Found something..."','What it is (1 line)','Why it matters (the signal)','Specific use case','Who should actually care','CTA — link or question'] },
+    { type:'Experiment post · Saturday/2w', style:'exp',
+      steps:['Hook — the unexpected result','What I actually tried','Why I tried it','The process (brief)','What worked / what failed','Big lesson + CTA'] }
+  ],
+  voiceAlways:['sharp','thoughtful','strategic','concise','authentic','practical','high-signal','slightly opinionated'],
+  voiceNever: ['generic','motivational fluff','cringe growth content','vague','low-signal']
+}
+const DRAFT_TEMPLATES = {
+  observation:{ day:'Monday',          gen:()=>`[Your observation hook here]\n\nHere's what I keep noticing:\n\n→ The pattern:\n[Describe what you're seeing across contexts]\n\nConcrete example:\n[Your specific example]\n\nThe insight:\n[So what does this mean?]\n\n[Discussion question to close]` },
+  find:       { day:'Thursday',        gen:()=>`Found something worth sharing.\n\n[Tool/resource name] — [one-line description]\n\nWhy it matters:\n[The signal — why does this exist now?]\n\nUse case that actually matters:\n→ [Specific use case 1]\n→ [Specific use case 2]\n→ [Specific use case 3]\n\nWho should care:\n[Your audience]\n\n→ [Link]` },
+  experiment: { day:'Saturday (2w)',   gen:()=>`[The unexpected result that hooks them]\n\nWhat I tried:\n[Describe the experiment briefly]\n\nThe process:\n1. [Step 1]\n2. [Step 2]\n3. [Step 3]\n\nWhat worked:\n[Be specific]\n\nWhat failed:\n[Be honest]\n\nBig lesson:\n[The insight that makes this worth sharing]\n\n[Question or CTA]` }
+}
 
-/* ═══════════════════════════════
-   SIDEBAR
-═══════════════════════════════ */
+/* ─── HELPERS ─── */
+const ICONS  = { obs:'✍', find:'⌘', exp:'◉' }
+const LABELS = { obs:'Observation', find:'Cool Find', exp:'Experiment',
+                 Observation:'obs', 'Cool Find':'find', Experiment:'exp' }
+
+function pill(p, label)  { return `<span class="pill ${p}">${label||LABELS[p]||p}</span>` }
+function spill(p)        { return `<span class="spill ${p}">${LABELS[p]||p}</span>` }
+function statusPill(s)   { return `<span class="status-pill ${s}">${s}</span>` }
+function prio(n, max=5)  { return `<div class="prio">${Array.from({length:max},(_,i)=>`<span class="pd" style="background:${i<n?'var(--yellow)':'var(--border)'}"></span>`).join('')}</div>` }
+function getGreeting()   { const h=new Date().getHours(); return h<12?'Good morning':h<17?'Good afternoon':'Good evening' }
+function emptyState(icon, text) { return `<div class="empty-state"><div class="es-icon">${icon}</div><div class="es-text">${text}</div></div>` }
+function toast(msg) {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.classList.add('show')
+  setTimeout(()=>t.classList.remove('show'), 2200)
+}
+function fmtDate(iso) {
+  if(!iso) return ''
+  const d = new Date(iso+'T00:00:00')
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})
+}
+
+/* ─── LOAD DATA ─── */
+async function loadAll() {
+  const [prof, inbox, pipeline, library, experiments, timeline] = await Promise.all([
+    sb.from('profile').select('*').limit(1).single(),
+    sb.from('inbox').select('*').order('created_at',{ascending:false}),
+    sb.from('pipeline').select('*').order('created_at',{ascending:false}),
+    sb.from('library').select('*').order('posted_date',{ascending:false}),
+    sb.from('experiments').select('*').order('created_at',{ascending:false}),
+    sb.from('timeline').select('*').order('time')
+  ])
+  S.profile     = prof.data || {}
+  S.inbox       = inbox.data || []
+  S.pipeline    = pipeline.data || []
+  S.library     = library.data || []
+  S.experiments = experiments.data || []
+  S.timeline    = timeline.data || []
+}
+
+/* ─── COMPUTED STATS ─── */
+function computeStats() {
+  const total = S.library.length
+  const pillarMix = [
+    { label:'Observation', count: S.library.filter(p=>p.pillar==='obs').length  },
+    { label:'Cool Find',   count: S.library.filter(p=>p.pillar==='find').length },
+    { label:'Experiment',  count: S.library.filter(p=>p.pillar==='exp').length  }
+  ]
+  const pipelineCounts = [
+    { stage:'Inbox',     count: S.pipeline.filter(p=>p.stage==='inbox').length     },
+    { stage:'Exploring', count: S.pipeline.filter(p=>p.stage==='exploring').length },
+    { stage:'Drafting',  count: S.pipeline.filter(p=>p.stage==='drafting').length  },
+    { stage:'Ready',     count: S.pipeline.filter(p=>p.stage==='ready').length     },
+    { stage:'Scheduled', count: S.pipeline.filter(p=>p.stage==='scheduled').length }
+  ]
+  const expCount = S.experiments.length
+  const expWarn  = expCount === 0 ? 'No experiments logged yet — aim for 1 every 2 weeks.' : ''
+
+  // streak from library dates
+  const now = new Date()
+  const dow = now.getDay()
+  const dToMon = dow===0?6:dow-1
+  const weekStart = new Date(now); weekStart.setDate(now.getDate()-dToMon); weekStart.setHours(0,0,0,0)
+  const weeksWithPosts = new Set()
+  S.library.forEach(p => {
+    if(!p.posted_date) return
+    const d = new Date(p.posted_date+'T00:00:00')
+    const dd = d.getDay(); const dtm = dd===0?6:dd-1
+    const m = new Date(d); m.setDate(d.getDate()-dtm); m.setHours(0,0,0,0)
+    weeksWithPosts.add(m.toISOString().split('T')[0])
+  })
+  let streak = 0
+  let chk = new Date(weekStart)
+  while(weeksWithPosts.has(chk.toISOString().split('T')[0])) { streak++; chk.setDate(chk.getDate()-7) }
+
+  const thisMonth = S.library.filter(p=>{
+    if(!p.posted_date) return false
+    const d = new Date(p.posted_date+'T00:00:00')
+    return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()
+  }).length
+
+  return { total, pillarMix, pipelineCounts, expWarn, streak: streak+'w', thisMonth }
+}
+
+function computeCalendar() {
+  const now = new Date()
+  const year = now.getFullYear(); const month = now.getMonth()
+  const monthName = now.toLocaleString('default',{month:'long'})
+  const firstDay = new Date(year,month,1)
+  let startWeekday = firstDay.getDay()-1; if(startWeekday<0) startWeekday=6
+  const totalDays = new Date(year,month+1,0).getDate()
+  const evMap = {}
+  S.library.forEach(p=>{
+    if(!p.posted_date) return
+    const d = new Date(p.posted_date+'T00:00:00')
+    if(d.getMonth()===month && d.getFullYear()===year) evMap[d.getDate()]={title:p.title,pillar:p.pillar}
+  })
+  S.pipeline.forEach(p=>{
+    if(p.stage!=='scheduled'||!p.scheduled_date) return
+    const d = new Date(p.scheduled_date+'T00:00:00')
+    if(d.getMonth()===month && d.getFullYear()===year) evMap[d.getDate()]={title:p.title,pillar:'sched'}
+  })
+  return { month:`${monthName} ${year}`, today:now.getDate(), startWeekday, totalDays, evMap }
+}
+
+/* ─── SIDEBAR ─── */
 function renderSidebar() {
-  const badgeCounts = { inbox: DATA.inbox.length, lab: DATA.experiments.length, library: DATA.library.length };
-  const badgeCls    = { inbox: 'nb', lab: 'nb', library: 'nb nb-g' };
-
-  const views = DATA.navViews.map(n => {
-    const b = n.badge ? `<span class="${badgeCls[n.badge]}">${badgeCounts[n.badge]}</span>` : '';
-    return `<div class="ni${n.id==='dashboard'?' active':''}" onclick="go('${n.id}',this)"><span class="ni-icon">${n.icon}</span>${n.label}${b}</div>`;
-  }).join('');
-
-  const tools = DATA.navTools.map(n =>
-    `<div class="ni" onclick="go('${n.id}',this)"><span class="ni-icon">${n.icon}</span>${n.label}</div>`
-  ).join('');
-
-  const cadence = DATA.cadence.map(c =>
-    `<div class="crow"><span class="cdot" style="background:${c.color}"></span>${c.label}</div>`
-  ).join('');
-
+  const counts = { inbox:S.inbox.length, lab:S.experiments.length, library:S.library.length }
+  const views = NAV_VIEWS.map(n=>{
+    const b = n.badge ? `<span class="nb${n.g?' nb-g':''}">${counts[n.badge]}</span>` : ''
+    return `<div class="ni" data-id="${n.id}" onclick="go('${n.id}',this)"><span class="ni-icon">${n.icon}</span>${n.label}${b}</div>`
+  }).join('')
+  const tools = NAV_TOOLS.map(n=>
+    `<div class="ni" data-id="${n.id}" onclick="go('${n.id}',this)"><span class="ni-icon">${n.icon}</span>${n.label}</div>`
+  ).join('')
+  const cadence = CADENCE.map(c=>`<div class="crow"><span class="cdot" style="background:${c.color}"></span>${c.label}</div>`).join('')
+  const tagline = (S.profile.tagline||'').replace('\n','<br/>')
   document.getElementById('sidebar').innerHTML = `
     <div class="logo">
       <div class="logo-name">Brand<span class="logo-dot">.</span>OS</div>
-      <div class="logo-sub">${DATA.user.tagline.replace('\n','<br/>')}</div>
+      <div class="logo-sub">${tagline||'Your personal brand OS'}</div>
     </div>
     <nav class="nav">
       <div class="nl">Views</div>${views}
       <div class="nl">Tools</div>${tools}
     </nav>
-    <div class="sfooter">
-      <div class="ccard"><div class="ctitle">Weekly Cadence</div>${cadence}</div>
-    </div>`;
+    <div class="sfooter"><div class="ccard"><div class="ctitle">Weekly Cadence</div>${cadence}</div></div>`
+  // mark active
+  document.querySelectorAll('.ni').forEach(n=>{ if(n.dataset.id===currentView) n.classList.add('active') })
 }
 
-/* ═══════════════════════════════
-   RIGHT PANEL
-═══════════════════════════════ */
+/* ─── RIGHT PANEL ─── */
 function renderRightPanel() {
-  const cal = DATA.calendar;
-  const evMap = {};
-  cal.events.forEach(e => evMap[e.day] = e);
-
-  const miniDays = ['Mo','Tu','We','Th','Fr','Sa','Su'].map(d=>`<div class="cal-dh">${d}</div>`).join('');
-  let cells = Array(cal.startWeekday).fill('<div class="cal-d"></div>').join('');
-  for(let d=1; d<=cal.totalDays; d++) {
-    const ev = evMap[d];
-    let cls = 'cal-d cur';
-    if(d === cal.today)               cls += ' today';
-    else if(ev?.pillar === 'sched')   cls += ' sched';
-    else if(ev)                       cls += ' posted';
-    cells += `<div class="${cls}">${d}</div>`;
+  const cal = computeCalendar()
+  const miniDays = ['Mo','Tu','We','Th','Fr','Sa','Su'].map(d=>`<div class="cal-dh">${d}</div>`).join('')
+  let cells = Array(cal.startWeekday).fill('<div class="cal-d"></div>').join('')
+  for(let d=1;d<=cal.totalDays;d++){
+    const ev = cal.evMap[d]
+    let cls='cal-d cur'
+    if(d===cal.today) cls+=' today'
+    else if(ev?.pillar==='sched') cls+=' sched'
+    else if(ev) cls+=' posted'
+    cells+=`<div class="${cls}">${d}</div>`
   }
-
-  const tlItems = DATA.timeline.map(t => `
-    <div class="tl-item">
-      <div class="tl-time">${t.time}</div>
-      <div class="tl-dot ${t.type}">${t.icon}</div>
-      <div class="tl-info">
-        <div class="tl-title">${t.title}</div>
-        <div class="tl-sub">${t.sub}</div>
-      </div>
-    </div>`).join('');
+  const tlHtml = S.timeline.length
+    ? S.timeline.map(t=>`
+        <div class="tl-item">
+          <div class="tl-time">${t.time}</div>
+          <div class="tl-dot ${t.type}">${t.icon}</div>
+          <div class="tl-info"><div class="tl-title">${t.title}</div><div class="tl-sub">${t.sub}</div></div>
+        </div>`).join('')
+    : emptyState('◻','No schedule items for today')
 
   document.getElementById('rpanel').innerHTML = `
     <div class="cal-head">
@@ -478,53 +461,61 @@ function renderRightPanel() {
       <div class="tl-filter">Today ▾</div>
     </div>
     <div class="tl-label">Today's schedule</div>
-    <div>${tlItems}</div>
-    <button class="tl-view" onclick="go('library',null)">View posted library →</button>`;
+    <div>${tlHtml}</div>
+    <button class="tl-view" onclick="go('library',null)">View posted library →</button>`
 }
 
-/* ═══════════════════════════════
-   DASHBOARD
-═══════════════════════════════ */
+/* ─── DASHBOARD ─── */
 function renderDashboard() {
-  const s = DATA.stats;
-  const total = DATA.pillarMix.reduce((a,b)=>a+b.count,0);
-  const maxPipe = Math.max(...DATA.pipeline.map(p=>p.count));
-  const scheduled = DATA.pipeline.find(p=>p.stage==='Scheduled')?.count || 0;
+  const stats = computeStats()
+  const name = S.profile.name || ''
 
-  const pillarStats = DATA.pillarMix.map(p =>
-    `<div class="kpi-stat"><div class="kv">${p.count}</div><div class="kl">${p.label}</div></div>`
-  ).join('');
+  const pillarStats = stats.pillarMix.map(p=>`<div class="kpi-stat"><div class="kv">${p.count}</div><div class="kl">${p.label}</div></div>`).join('')
 
-  const pipeRows = DATA.pipeline.map(p =>
-    `<div class="pipe-row">
+  const maxPipe = Math.max(...stats.pipelineCounts.map(p=>p.count), 1)
+  const pipeRows = stats.pipelineCounts.map(p=>`
+    <div class="pipe-row">
       <div class="pipe-stage">${p.stage}</div>
       <div class="pipe-track"><div class="pipe-fill" style="width:${Math.round(p.count/maxPipe*100)}%"></div></div>
       <div class="pipe-n">${p.count}</div>
-    </div>`
-  ).join('');
+    </div>`).join('')
 
-  const pilRows = DATA.pillarMix.map(p =>
-    `<div class="pil-row">
+  const pilRows = stats.pillarMix.map(p=>`
+    <div class="pil-row">
       <div class="pil-label">${p.label}</div>
-      <div class="pil-track"><div class="pil-fill" style="width:${Math.round(p.count/total*100)}%"></div></div>
+      <div class="pil-track"><div class="pil-fill" style="width:${stats.total?Math.round(p.count/stats.total*100):0}%"></div></div>
       <div class="pil-n">${p.count}</div>
-    </div>`
-  ).join('');
+    </div>`).join('')
 
-  const posts = DATA.recentPosts.map(p => `
-    <div class="post-item">
-      <div class="picon ${p.pillar}">${ICONS[p.pillar]}</div>
-      <div class="pinfo">
-        <div class="ptitle">${p.title}</div>
-        <div class="psub">${spill(p.pillar)}</div>
-      </div>
-      <div class="pright">
-        <div class="ptag">${p.date}</div>
-        <div class="pbar"><div class="pfill" style="width:${p.perf}%"></div></div>
-      </div>
-    </div>`).join('');
+  const recentHtml = S.library.length
+    ? S.library.slice(0,6).map(p=>`
+        <div class="post-item">
+          <div class="picon ${p.pillar}">${ICONS[p.pillar]||'✦'}</div>
+          <div class="pinfo"><div class="ptitle">${p.title}</div><div class="psub">${spill(p.pillar)}</div></div>
+          <div class="pright">
+            <div class="ptag">${fmtDate(p.posted_date)}</div>
+            <div class="pbar"><div class="pfill" style="width:${p.perf||0}%"></div></div>
+          </div>
+        </div>`).join('')
+    : emptyState('◑','No posts published yet')
 
-  const np = DATA.nextPost;
+  // next scheduled post
+  const nextPost = S.pipeline.find(p=>p.stage==='scheduled')
+  const detailHtml = nextPost
+    ? `<div class="detail-card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div><div class="dc-name">Next Post</div><div class="dc-meta">${fmtDate(nextPost.scheduled_date)} · ${LABELS[nextPost.pillar]||nextPost.pillar}</div></div>
+          <div class="dc-id">SCHEDULED</div>
+        </div>
+        <div class="dc-tags">${nextPost.format?`<span class="dctag">${nextPost.format}</span>`:''}</div>
+        <div class="dc-divider"></div>
+        <div class="dc-row"><div class="dc-key">Title</div><div class="dc-val">${nextPost.title}</div></div>
+        <div class="dc-row"><div class="dc-key">Status</div><div class="dc-val">${statusPill('scheduled')}</div></div>
+        <button class="dc-btn" onclick="go('draft',null)">Open in Draft Studio →</button>
+      </div>`
+    : `<div class="detail-card" style="align-items:center;justify-content:center;min-height:200px">
+        ${emptyState('◻','No scheduled posts yet<br/><span style="font-size:10px">Add ideas to the pipeline</span>')}
+      </div>`
 
   document.getElementById('view-dashboard').innerHTML = `
     <div class="topbar">
@@ -533,25 +524,29 @@ function renderDashboard() {
         <input class="search-input" placeholder="Search ideas, posts..."/>
       </div>
       <div class="fpills">
-        ${DATA.pillarMix.map((p,i)=>`<span class="fpill ${i===0?'on':'off'}">${p.label}s</span>`).join('')}
+        <span class="fpill on">Observations</span>
+        <span class="fpill off">Cool Finds</span>
+        <span class="fpill off">Experiments</span>
       </div>
       <div class="tbbtns">
         <div class="btn light sm" onclick="go('draft',null)">+ Draft</div>
         <div class="btn dark sm" onclick="go('inbox',null)">+ Capture</div>
       </div>
     </div>
-
     <div>
-      <div class="greeting-title">${getGreeting()}, ${DATA.user.name}.</div>
-      <div class="greeting-sub">Brand OS is ready. You have ${DATA.inbox.length} ideas in your inbox and ${scheduled} posts scheduled this week. ${DATA.pillarWarning}.</div>
+      <div class="greeting-title">${getGreeting()}${name?', '+name:''}.</div>
+      <div class="greeting-sub">
+        ${stats.total>0
+          ? `You have ${S.inbox.length} idea${S.inbox.length!==1?'s':''} in your inbox and ${stats.pipelineCounts.find(p=>p.stage==='Scheduled')?.count||0} posts scheduled.${stats.expWarn?' '+stats.expWarn:''}`
+          : 'Welcome to Brand OS. Start by capturing an idea in your inbox.'}
+      </div>
     </div>
-
     <div class="kpi-row">
       <div class="kpi-card yellow">
         <div>
           <div class="kpi-label">Posts Published</div>
-          <div class="kpi-val">${s.published}</div>
-          <div class="kpi-sub">${s.publishedDelta}</div>
+          <div class="kpi-val">${stats.total}</div>
+          <div class="kpi-sub">${stats.thisMonth} this month</div>
         </div>
         <div class="kpi-bottom">${pillarStats}</div>
         <div class="kpi-deco">
@@ -567,13 +562,13 @@ function renderDashboard() {
       <div class="kpi-card pink">
         <div>
           <div class="kpi-label">Posting Streak</div>
-          <div class="kpi-val">${s.streakCurrent}</div>
+          <div class="kpi-val">${stats.streak}</div>
           <div class="kpi-sub">consecutive weeks</div>
         </div>
         <div class="kpi-bottom">
-          <div class="kpi-stat"><div class="kv">${s.streakCurrent}</div><div class="kl">Current</div></div>
-          <div class="kpi-stat"><div class="kv">${s.streakBest}</div><div class="kl">Best</div></div>
-          <div class="kpi-stat"><div class="kv">${s.streakPostsThisMonth}</div><div class="kl">Posts May</div></div>
+          <div class="kpi-stat"><div class="kv">${stats.streak}</div><div class="kl">Current</div></div>
+          <div class="kpi-stat"><div class="kv">${S.profile.streak_best||'0w'}</div><div class="kl">Best</div></div>
+          <div class="kpi-stat"><div class="kv">${stats.thisMonth}</div><div class="kl">This Month</div></div>
         </div>
         <div class="kpi-deco">
           <svg width="100" height="70" viewBox="0 0 100 70" fill="none">
@@ -584,62 +579,45 @@ function renderDashboard() {
         </div>
       </div>
     </div>
-
     <div class="mid-row">
       <div class="mc olive">
-        <div class="mc-title">Pipeline Snapshot · ${DATA.pipeline.reduce((a,b)=>a+b.count,0)} active</div>
-        ${pipeRows}
+        <div class="mc-title">Pipeline · ${S.pipeline.length} active</div>
+        ${pipeRows||emptyState('◈','No pipeline items yet')}
         <div class="mc-deco"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><polygon points="40,6 72,66 8,66" fill="#1A2A00"/></svg></div>
       </div>
       <div class="mc blue">
-        <div class="mc-title">Pillar Mix · ${total} posts</div>
+        <div class="mc-title">Pillar Mix · ${stats.total} posts</div>
         ${pilRows}
-        <div class="warn">⚠ ${DATA.pillarWarning}</div>
+        ${stats.expWarn?`<div class="warn">⚠ ${stats.expWarn}</div>`:''}
         <div class="mc-deco"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><path d="M40 6 L43.5 32 L68 18 L52 38 L74 43 L48 48 L62 70 L40 55 L18 70 L32 48 L6 43 L28 38 L12 18 L37 32 Z" fill="#0A1A3A"/></svg></div>
       </div>
     </div>
-
     <div class="bot-row">
       <div class="wcard">
         <div class="wcard-h">
           <div class="wcard-title">Recent Posts</div>
-          <div class="wcard-tag">last ${DATA.recentPosts.length} · repurpose flagged</div>
+          <div class="wcard-tag">last ${Math.min(S.library.length,6)}</div>
         </div>
-        ${posts}
+        ${recentHtml}
       </div>
-      <div class="detail-card">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between">
-          <div><div class="dc-name">Next Post</div><div class="dc-meta">${np.date} · ${np.pillar}</div></div>
-          <div class="dc-id">${np.status.toUpperCase()}</div>
-        </div>
-        <div class="dc-tags">${np.tags.map(t=>`<span class="dctag">${t}</span>`).join('')}</div>
-        <div class="dc-divider"></div>
-        <div class="dc-row"><div class="dc-key">Title</div><div class="dc-val">${np.title}</div></div>
-        <div class="dc-row"><div class="dc-key">Hook</div><div class="dc-val">${np.hook}</div></div>
-        <div class="dc-row"><div class="dc-key">CTA</div><div class="dc-val">${np.cta}</div></div>
-        <div class="dc-row"><div class="dc-key">Status</div><div class="dc-val">${statusPill('ready')}</div></div>
-        <button class="dc-btn" onclick="go('draft',null)">Open in Draft Studio →</button>
-      </div>
-    </div>`;
+      ${detailHtml}
+    </div>`
 }
 
-/* ═══════════════════════════════
-   INBOX
-═══════════════════════════════ */
+/* ─── INBOX ─── */
 function renderInbox() {
-  const rows = DATA.inbox.map((item, i) => {
-    const pc = LABELS[item.pillar];
+  const rows = S.inbox.map((item,i)=>{
+    const pc = LABELS[item.pillar]
     return `<tr>
       <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${String(i+1).padStart(2,'0')}</td>
       <td style="font-size:11px;font-weight:500;max-width:200px">${item.idea}</td>
-      <td>${pill(pc, item.pillar)}</td>
-      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${item.source}</td>
-      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${item.format}</td>
-      <td>${prio(item.priority)}</td>
-      <td><div class="btn dark sm" onclick="draftFrom('${pc}','${item.idea.replace(/'/g,"\\'")}')">Draft →</div></td>
-    </tr>`;
-  }).join('');
-
+      <td>${pill(pc||'obs', item.pillar)}</td>
+      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${item.source||'—'}</td>
+      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${item.format||'Text Post'}</td>
+      <td>${prio(item.priority||3)}</td>
+      <td><div class="btn dark sm" onclick="draftFrom('${pc||'obs'}','${(item.idea||'').replace(/'/g,"\\'")}')">Draft →</div></td>
+    </tr>`
+  }).join('')
   document.getElementById('view-inbox').innerHTML = `
     <div class="sh">
       <div><div class="sh-title">Inbox</div><div class="sh-sub">Quick capture · classify later</div></div>
@@ -651,135 +629,115 @@ function renderInbox() {
       <select class="fsel" id="inbox-source"><option value="">Source...</option><option>GitHub</option><option>X</option><option>Claude</option><option>Work</option><option>Observation</option><option>Article</option><option>Random Thought</option></select>
       <div class="btn dark" onclick="addInbox()">Add</div>
     </div>
-    <table class="db-table">
-      <thead><tr><th>#</th><th>Raw Idea</th><th>Pillar</th><th>Source</th><th>Format</th><th>Priority</th><th>Action</th></tr></thead>
-      <tbody id="inbox-body">${rows}</tbody>
-    </table>`;
+    ${S.inbox.length
+      ? `<table class="db-table"><thead><tr><th>#</th><th>Raw Idea</th><th>Pillar</th><th>Source</th><th>Format</th><th>Priority</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`
+      : emptyState('✦','Your inbox is empty — capture your next idea above')}`
 }
 
-/* ═══════════════════════════════
-   PIPELINE
-═══════════════════════════════ */
+/* ─── PIPELINE ─── */
 function renderPipeline() {
-  const cols = Object.entries(DATA.kanban).map(([stage, cards]) => {
-    const html = cards.map(c => {
-      const cls = `kcard${stage==='Scheduled'?' scheduled':stage==='Repurpose'?' repurpose':''}`;
-      const opacity = stage === 'Posted' ? ' style="opacity:.5"' : '';
+  const stages = ['inbox','exploring','drafting','ready','scheduled','posted','repurpose']
+  const cols = stages.map(stage=>{
+    const cards = S.pipeline.filter(p=>p.stage===stage)
+    const html = cards.map(c=>{
+      const cls = `kcard${stage==='scheduled'?' scheduled':stage==='repurpose'?' repurpose':''}`
+      const opacity = stage==='posted' ? ' style="opacity:.5"' : ''
       return `<div class="${cls}"${opacity}>
         <div style="margin-bottom:5px">${pill(c.pillar)}</div>
         <div class="kcard-title">${c.title}</div>
         <div class="kcard-meta">
           ${c.format?`<span class="kcard-fmt">${c.format}</span>`:''}
           ${c.priority?`<div style="margin-left:auto">${prio(c.priority)}</div>`:''}
-          ${c.date?`<span class="kcard-date">${c.date}</span>`:''}
+          ${c.scheduled_date?`<span class="kcard-date">${fmtDate(c.scheduled_date)}</span>`:''}
         </div>
-      </div>`;
-    }).join('');
+      </div>`
+    }).join('')
     return `<div class="kcol">
       <div class="kcol-h"><span class="kcol-name">${stage}</span><span class="kcol-n">${cards.length}</span></div>
-      ${html}
-    </div>`;
-  }).join('');
-
+      ${html||`<div style="font-size:10px;color:var(--muted);text-align:center;padding:12px 0">Empty</div>`}
+    </div>`
+  }).join('')
   document.getElementById('view-pipeline').innerHTML = `
     <div class="sh"><div><div class="sh-title">Editorial Pipeline</div><div class="sh-sub">Kanban · idea to posted</div></div></div>
-    <div class="kanban">${cols}</div>`;
+    <div class="kanban">${cols}</div>`
 }
 
-/* ═══════════════════════════════
-   CALENDAR
-═══════════════════════════════ */
+/* ─── CALENDAR ─── */
 function renderCalendar() {
-  const cal = DATA.calendar;
-  const evMap = {};
-  cal.events.forEach(e => evMap[e.day] = e);
-
-  const legend = ['obs','find','exp'].map(p => {
-    const bg = p==='obs'?'var(--yellow-t)':p==='find'?'var(--blue-t)':'var(--pink-t)';
-    const fc = p==='obs'?'#5a4800':p==='find'?'#1a2a5a':'#5a1a28';
-    return `<span style="font-size:9px;font-weight:700;display:flex;align-items:center;gap:4px;color:${fc}"><span style="width:8px;height:8px;border-radius:3px;background:${bg};display:inline-block"></span>${LABELS[p]}</span>`;
-  }).join('');
-
-  const headers = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div class="cv-dh">${d}</div>`).join('');
-  let cells = Array(cal.startWeekday).fill('<div class="cv-d empty"></div>').join('');
-  for(let d=1; d<=cal.totalDays; d++) {
-    const ev = evMap[d];
-    cells += `<div class="cv-d${d===cal.today?' today':''}">
+  const cal = computeCalendar()
+  const legend = ['obs','find','exp'].map(p=>{
+    const bg = p==='obs'?'var(--yellow-t)':p==='find'?'var(--blue-t)':'var(--pink-t)'
+    const fc = p==='obs'?'#5a4800':p==='find'?'#1a2a5a':'#5a1a28'
+    return `<span style="font-size:9px;font-weight:700;display:flex;align-items:center;gap:4px;color:${fc}"><span style="width:8px;height:8px;border-radius:3px;background:${bg};display:inline-block"></span>${LABELS[p]}</span>`
+  }).join('')
+  const headers = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div class="cv-dh">${d}</div>`).join('')
+  let cells = Array(cal.startWeekday).fill('<div class="cv-d empty"></div>').join('')
+  for(let d=1;d<=cal.totalDays;d++){
+    const ev = cal.evMap[d]
+    cells+=`<div class="cv-d${d===cal.today?' today':''}">
       <div class="cv-num">${d}${d===cal.today?' ◉':''}</div>
-      ${ev ? `<div class="cv-post ${ev.pillar}">${ev.title}</div>` : ''}
-    </div>`;
+      ${ev?`<div class="cv-post ${ev.pillar}">${ev.title}</div>`:''}
+    </div>`
   }
-  const rem = (7 - ((cal.startWeekday + cal.totalDays) % 7)) % 7;
-  cells += Array(rem).fill('<div class="cv-d empty" style="opacity:.2"></div>').join('');
-
+  const rem = (7-((cal.startWeekday+cal.totalDays)%7))%7
+  cells += Array(rem).fill('<div class="cv-d empty" style="opacity:.2"></div>').join('')
   document.getElementById('view-calendar').innerHTML = `
     <div class="sh">
       <div><div class="sh-title">Content Calendar — ${cal.month}</div><div class="sh-sub">Mon = Observation · Thu = Cool Find · Sat/2w = Experiment</div></div>
       <div style="display:flex;gap:8px;align-items:center">${legend}</div>
     </div>
-    <div class="cal-view-grid">${headers}${cells}</div>`;
+    <div class="cal-view-grid">${headers}${cells}</div>`
 }
 
-/* ═══════════════════════════════
-   EXPERIMENT LAB
-═══════════════════════════════ */
+/* ─── LAB ─── */
 function renderLab() {
-  const cards = DATA.experiments.map(e => {
-    const dateStr = e.date ? `${e.date} · ${e.status}` : e.status;
-    const action = e.status === 'posted'
+  const cards = S.experiments.map(e=>{
+    const dateStr = e.exp_date ? `${fmtDate(e.exp_date)} · ${e.status}` : e.status
+    const action = e.status==='posted'
       ? `<div class="btn light sm">Repurpose</div>`
-      : `<div class="btn dark sm" onclick="draftFrom('experiment','${e.draftIdea.replace(/'/g,"\\'")}')">Draft →</div>`;
+      : `<div class="btn dark sm" onclick="draftFrom('experiment','${(e.draft_idea||'').replace(/'/g,"\\'")}')">Draft →</div>`
     return `<div class="exp-card">
       <div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
           <span class="spill exp">Experiment</span>
-          <span style="font-family:var(--mono);font-size:9px;color:var(--muted);font-weight:500">${dateStr}</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--muted)">${dateStr}</span>
         </div>
         <div class="exp-title">${e.title}</div>
-        <div class="exp-meta">${e.description}</div>
-        <div class="exp-note" style="color:${e.lessonColor}">${e.lesson}</div>
+        <div class="exp-meta">${e.description||''}</div>
+        ${e.lesson?`<div class="exp-note" style="color:${e.lesson_color||'#2a4a00'}">${e.lesson}</div>`:''}
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">
-        ${statusPill(e.status)}${action}
-      </div>
-    </div>`;
-  }).join('');
-
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">${statusPill(e.status)}${action}</div>
+    </div>`
+  }).join('')
   document.getElementById('view-lab').innerHTML = `
     <div class="sh">
       <div><div class="sh-title">Experiment Lab</div><div class="sh-sub">Claude · vibe coding · AI builds · prototypes</div></div>
-      <div class="btn dark sm" onclick="draftFrom('experiment','')">+ Log Experiment</div>
+      <div class="btn dark sm" onclick="go('draft',null)">+ Log Experiment</div>
     </div>
-    ${cards}`;
+    ${cards||emptyState('◉','No experiments logged yet — start building')}`
 }
 
-/* ═══════════════════════════════
-   LIBRARY
-═══════════════════════════════ */
+/* ─── LIBRARY ─── */
 function renderLibrary() {
-  const rows = DATA.library.map((p, i) => `
+  const rows = S.library.map((p,i)=>`
     <tr>
       <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${String(i+1).padStart(2,'0')}</td>
       <td style="font-size:11px;font-weight:500;max-width:180px">${p.title}</td>
       <td>${spill(p.pillar)}</td>
-      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${p.format}</td>
-      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${p.date}</td>
-      <td><div class="pbar"><div class="pfill" style="width:${p.perf}%"></div></div></td>
+      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${p.format||''}</td>
+      <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${fmtDate(p.posted_date)}</td>
+      <td><div class="pbar"><div class="pfill" style="width:${p.perf||0}%"></div></div></td>
       <td><input type="checkbox" ${p.repurpose?'checked':''} style="accent-color:var(--text)"/></td>
-      <td style="font-size:10px;color:var(--muted)">${p.notes}</td>
-    </tr>`).join('');
-
+      <td style="font-size:10px;color:var(--muted)">${p.notes||''}</td>
+    </tr>`).join('')
   document.getElementById('view-library').innerHTML = `
     <div class="sh"><div><div class="sh-title">Posted Library</div><div class="sh-sub">Published archive · newest first</div></div></div>
-    <table class="db-table">
-      <thead><tr><th>#</th><th>Post Title</th><th>Pillar</th><th>Format</th><th>Date</th><th>Perf</th><th>Repurpose</th><th>Notes</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+    ${S.library.length
+      ? `<table class="db-table"><thead><tr><th>#</th><th>Post Title</th><th>Pillar</th><th>Format</th><th>Date</th><th>Perf</th><th>Repurpose</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table>`
+      : emptyState('◑','No published posts yet — move pipeline items to Posted')}`
 }
 
-/* ═══════════════════════════════
-   DRAFT STUDIO
-═══════════════════════════════ */
+/* ─── DRAFT ─── */
 function renderDraft() {
   document.getElementById('view-draft').innerHTML = `
     <div class="sh"><div><div class="sh-title">AI Draft Studio</div><div class="sh-sub">Idea in → LinkedIn post out</div></div></div>
@@ -788,31 +746,14 @@ function renderDraft() {
         <div class="ai-ph"><div><div class="ai-lab">Input</div><div class="ai-title">Your Idea</div></div></div>
         <div class="ai-pb">
           <div class="fg"><div class="fl">Raw Idea</div><textarea class="fi" id="draft-idea" rows="3" placeholder="Paste your raw thought, observation or find..."></textarea></div>
-          <div class="fg"><div class="fl">Content Pillar</div>
-            <select class="fsel" id="draft-pillar" style="width:100%">
-              <option value="observation">Observation</option>
-              <option value="find">Cool Find</option>
-              <option value="experiment">Experiment</option>
-            </select>
-          </div>
-          <div class="fg"><div class="fl">Format</div>
-            <select class="fsel" id="draft-format" style="width:100%">
-              <option>Text Post</option><option>Carousel</option><option>Screenshot Commentary</option><option>Breakdown</option><option>Mini Thread</option>
-            </select>
-          </div>
-          <div class="fg"><div class="fl">Source</div>
-            <select class="fsel" id="draft-source" style="width:100%">
-              <option>GitHub</option><option>X</option><option>Claude</option><option>Work</option><option>Observation</option><option>Article</option><option>Random Thought</option>
-            </select>
-          </div>
-          <button class="btn dark" style="width:100%;justify-content:center;font-size:12px;padding:10px" onclick="generateDraft()">Generate LinkedIn Draft →</button>
+          <div class="fg"><div class="fl">Content Pillar</div><select class="fsel" id="draft-pillar" style="width:100%"><option value="observation">Observation</option><option value="find">Cool Find</option><option value="experiment">Experiment</option></select></div>
+          <div class="fg"><div class="fl">Format</div><select class="fsel" id="draft-format" style="width:100%"><option>Text Post</option><option>Carousel</option><option>Screenshot Commentary</option><option>Breakdown</option><option>Mini Thread</option></select></div>
+          <div class="fg"><div class="fl">Source</div><select class="fsel" id="draft-source" style="width:100%"><option>GitHub</option><option>X</option><option>Claude</option><option>Work</option><option>Observation</option><option>Article</option><option>Random Thought</option></select></div>
+          <button class="btn dark" style="width:100%;justify-content:center;font-size:12px;padding:10px" onclick="generateDraft()">Generate Draft →</button>
         </div>
       </div>
       <div class="ai-panel">
-        <div class="ai-ph">
-          <div><div class="ai-lab">Output</div><div class="ai-title">LinkedIn Draft</div></div>
-          <div><div class="btn light sm" onclick="copyDraft()">Copy</div></div>
-        </div>
+        <div class="ai-ph"><div><div class="ai-lab">Output</div><div class="ai-title">LinkedIn Draft</div></div><div><div class="btn light sm" onclick="copyDraft()">Copy</div></div></div>
         <div class="ai-pb">
           <div class="draft-out" id="draft-out"><span style="color:var(--muted);font-family:var(--mono);font-size:11px">← Fill in your idea and hit Generate.</span></div>
           <div style="margin-top:12px;padding-top:12px;border-top:1.5px solid var(--border)">
@@ -821,126 +762,107 @@ function renderDraft() {
           </div>
         </div>
       </div>
-    </div>`;
+    </div>`
 }
 
-/* ═══════════════════════════════
-   PLAYBOOK
-═══════════════════════════════ */
+/* ─── PLAYBOOK ─── */
 function renderPlaybook() {
-  const styleMap = {
-    obs:  { bg:'var(--yellow-t)', color:'#5a4800' },
-    find: { bg:'var(--blue-t)',   color:'#1a2a5a' },
-    exp:  { bg:'var(--pink-t)',   color:'#5a1a28' }
-  };
-  const ruleCards = DATA.playbook.formats.map(f => {
-    const s = styleMap[f.style];
-    const steps = f.steps.map((st,i)=>`<div class="rule-step"><span class="rule-n">${i+1}</span><span>${st}</span></div>`).join('');
-    return `<div class="rule-card"><div class="rule-type" style="background:${s.bg};color:${s.color}">${f.type}</div>${steps}</div>`;
-  }).join('');
-
-  const alwaysTags = DATA.playbook.voiceAlways.map(t=>`<span class="vtag" style="background:var(--olive-t);color:#1a3a00">${t}</span>`).join('');
-  const neverTags  = DATA.playbook.voiceNever.map(t=>`<span class="vtag" style="background:var(--pink-t);color:#5a1a28">${t}</span>`).join('');
-
+  const sm = { obs:{bg:'var(--yellow-t)',color:'#5a4800'}, find:{bg:'var(--blue-t)',color:'#1a2a5a'}, exp:{bg:'var(--pink-t)',color:'#5a1a28'} }
+  const cards = PLAYBOOK.formats.map(f=>{
+    const s = sm[f.style]
+    return `<div class="rule-card"><div class="rule-type" style="background:${s.bg};color:${s.color}">${f.type}</div>
+      ${f.steps.map((st,i)=>`<div class="rule-step"><span class="rule-n">${i+1}</span><span>${st}</span></div>`).join('')}</div>`
+  }).join('')
+  const aTags = PLAYBOOK.voiceAlways.map(t=>`<span class="vtag" style="background:var(--olive-t);color:#1a3a00">${t}</span>`).join('')
+  const nTags = PLAYBOOK.voiceNever.map(t=>`<span class="vtag" style="background:var(--pink-t);color:#5a1a28">${t}</span>`).join('')
   document.getElementById('view-playbook').innerHTML = `
     <div class="sh"><div><div class="sh-title">Writing Playbook</div><div class="sh-sub">Post structures · voice rules · never-do list</div></div></div>
-    <div class="rules-grid">${ruleCards}</div>
+    <div class="rules-grid">${cards}</div>
     <div class="voice-panel">
-      <div style="font-size:13px;font-weight:700;letter-spacing:-.01em;margin-bottom:14px">Voice Rules</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:14px">Voice Rules</div>
       <div class="voice-grid">
-        <div><div class="fl" style="margin-bottom:8px">Always be</div>${alwaysTags}</div>
-        <div><div class="fl" style="margin-bottom:8px">Never be</div>${neverTags}</div>
+        <div><div class="fl" style="margin-bottom:8px">Always be</div>${aTags}</div>
+        <div><div class="fl" style="margin-bottom:8px">Never be</div>${nTags}</div>
       </div>
-    </div>`;
+    </div>`
 }
 
-/* ═══════════════════════════════
-   NAVIGATION
-═══════════════════════════════ */
-const VIEWS = ['dashboard','inbox','pipeline','calendar','lab','library','draft','playbook'];
+/* ─── NAV ─── */
+const VIEWS = ['dashboard','inbox','pipeline','calendar','lab','library','draft','playbook']
+let currentView = 'dashboard'
 
 function go(id, el) {
-  VIEWS.forEach(v => { const e = document.getElementById('view-'+v); if(e) e.className='view'; });
-  const t = document.getElementById('view-'+id);
-  if(t) t.className = 'view active';
-  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
-  if(el) { el.classList.add('active'); }
-  else { document.querySelectorAll('.ni').forEach(n => { if(n.getAttribute('onclick')?.includes(`'${id}'`)) n.classList.add('active'); }); }
+  currentView = id
+  VIEWS.forEach(v=>{ const e=document.getElementById('view-'+v); if(e) e.className='view' })
+  const t = document.getElementById('view-'+id); if(t) t.className='view active'
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'))
+  if(el) el.classList.add('active')
+  else document.querySelectorAll('.ni').forEach(n=>{ if(n.dataset.id===id) n.classList.add('active') })
 }
 
-/* ═══════════════════════════════
-   INBOX ADD
-═══════════════════════════════ */
-function addInbox() {
-  const idea   = document.getElementById('inbox-input').value.trim();
-  if(!idea) return;
-  const pillar = document.getElementById('inbox-pillar').value || 'Observation';
-  const source = document.getElementById('inbox-source').value || '—';
-  const tbody  = document.getElementById('inbox-body');
-  const n      = String(tbody.children.length + 1).padStart(2,'0');
-  const pc     = LABELS[pillar];
-  const tr     = document.createElement('tr');
-  tr.innerHTML = `
-    <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${n}</td>
-    <td style="font-size:11px;font-weight:500;max-width:200px">${idea}</td>
-    <td>${pill(pc, pillar)}</td>
-    <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${source}</td>
-    <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">Text Post</td>
-    <td>${prio(3)}</td>
-    <td><div class="btn dark sm" onclick="draftFrom('${pc}','${idea.replace(/'/g,"\\'")}')">Draft →</div></td>`;
-  tbody.insertBefore(tr, tbody.firstChild);
-  document.getElementById('inbox-input').value = '';
+/* ─── MUTATIONS ─── */
+async function addInbox() {
+  const idea   = document.getElementById('inbox-input')?.value.trim()
+  if(!idea) return
+  const pillar = document.getElementById('inbox-pillar')?.value || 'Observation'
+  const source = document.getElementById('inbox-source')?.value || ''
+  const { error } = await sb.from('inbox').insert({ idea, pillar, source, format:'Text Post', priority:3 })
+  if(error) { toast('Error: '+error.message); return }
+  toast('Idea captured ✓')
+  await loadAll()
+  renderInbox()
+  renderSidebar()
+  renderDashboard()
+  document.getElementById('inbox-input').value = ''
 }
 
-/* ═══════════════════════════════
-   DRAFT GENERATE
-═══════════════════════════════ */
 function draftFrom(pillar, idea) {
-  go('draft', null);
-  document.querySelectorAll('.ni').forEach(n => { if(n.getAttribute('onclick')?.includes("'draft'")) n.classList.add('active'); });
-  setTimeout(() => {
-    if(idea) document.getElementById('draft-idea').value = idea;
-    document.getElementById('draft-pillar').value = pillar;
-    setTimeout(generateDraft, 120);
-  }, 50);
+  go('draft', null)
+  setTimeout(()=>{
+    const el = document.getElementById('draft-idea'); if(el&&idea) el.value = idea
+    const pl = document.getElementById('draft-pillar'); if(pl) pl.value = pillar
+    setTimeout(generateDraft, 120)
+  }, 50)
 }
 
 function generateDraft() {
-  const pillar = document.getElementById('draft-pillar').value;
-  const out    = document.getElementById('draft-out');
-  const dayEl  = document.getElementById('post-day');
-  out.innerHTML = '<div class="ld"><span class="ldd"></span><span class="ldd"></span><span class="ldd"></span></div>';
-  setTimeout(() => {
-    const d    = DATA.drafts[pillar] || DATA.drafts.observation;
-    const text = d.gen();
-    dayEl.textContent = '→ Post on ' + d.day;
-    const lines = text.split('\n');
-    out.innerHTML = `<span class="draft-hook">${lines[0]}</span>${lines.slice(1).join('\n')}`;
-  }, 1100);
+  const pillar = document.getElementById('draft-pillar')?.value || 'observation'
+  const out = document.getElementById('draft-out')
+  const dayEl = document.getElementById('post-day')
+  if(!out) return
+  out.innerHTML = '<div class="ld"><span class="ldd"></span><span class="ldd"></span><span class="ldd"></span></div>'
+  setTimeout(()=>{
+    const d = DRAFT_TEMPLATES[pillar] || DRAFT_TEMPLATES.observation
+    dayEl.textContent = '→ Post on '+d.day
+    const text = d.gen()
+    const lines = text.split('\n')
+    out.innerHTML = `<span class="draft-hook">${lines[0]}</span>${lines.slice(1).join('\n')}`
+  }, 900)
 }
 
 function copyDraft() {
-  const text = document.getElementById('draft-out').innerText;
-  navigator.clipboard.writeText(text).catch(()=>{});
-  const btn = event.target;
-  const orig = btn.textContent;
-  btn.textContent = 'Copied!';
-  setTimeout(()=>btn.textContent=orig, 1500);
+  const text = document.getElementById('draft-out')?.innerText
+  if(text) navigator.clipboard.writeText(text).catch(()=>{})
+  toast('Copied to clipboard ✓')
 }
 
-/* ═══════════════════════════════
-   INIT — render everything
-═══════════════════════════════ */
-renderSidebar();
-renderRightPanel();
-renderDashboard();
-renderInbox();
-renderPipeline();
-renderCalendar();
-renderLab();
-renderLibrary();
-renderDraft();
-renderPlaybook();
+/* ─── INIT ─── */
+async function init() {
+  renderSidebar()
+  await loadAll()
+  renderSidebar()
+  renderRightPanel()
+  renderDashboard()
+  renderInbox()
+  renderPipeline()
+  renderCalendar()
+  renderLab()
+  renderLibrary()
+  renderDraft()
+  renderPlaybook()
+}
+
+init()
 </script>
 </body>
 </html>
