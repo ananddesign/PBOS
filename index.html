@@ -241,6 +241,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
     <div id="view-library"   class="view"></div>
     <div id="view-draft"     class="view"></div>
     <div id="view-playbook"  class="view"></div>
+    <div id="view-settings"  class="view"></div>
   </main>
   <aside class="rpanel" id="rpanel"><div class="loading">Loading...</div></aside>
 </div>
@@ -252,14 +253,17 @@ const SB_URL = 'https://jmsaxwqisykrlnlifsjp.supabase.co'
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imptc2F4d3Fpc3lrcmxubGlmc2pwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMzY1NjcsImV4cCI6MjA5NDYxMjU2N30.QMVWUTZP1b6Z6XH8qV5jYLas6NxaYIkgNuQd-nAdqos'
 const sb = supabase.createClient(SB_URL, SB_KEY)
 
+/* ─── WEBHOOK ─── */
+let WEBHOOK_URL = localStorage.getItem('pbos_webhook') || ''
+
 /* ─── STATE ─── */
 let S = { profile:{}, inbox:[], pipeline:[], library:[], experiments:[], timeline:[] }
 
 /* ─── STATIC CONFIG ─── */
 const CADENCE = [
-  { color:'#E9D94C', label:'Mon → Observation'   },
-  { color:'#B8CCF0', label:'Thu → Cool Find'      },
-  { color:'#F2B8C6', label:'Sat/2w → Experiment'  }
+  { color:'#E9D94C', label:'Mon 9–11 AM → Utility'     },
+  { color:'#F2B8C6', label:'Wed 11–1 PM → Experiment'  },
+  { color:'#B8CCF0', label:'Fri 10–12 PM → Observation' }
 ]
 const NAV_VIEWS = [
   { id:'dashboard', icon:'⬡', label:'Dashboard'                              },
@@ -271,30 +275,31 @@ const NAV_VIEWS = [
 ]
 const NAV_TOOLS = [
   { id:'draft',    icon:'✐', label:'AI Draft Studio'  },
-  { id:'playbook', icon:'◧', label:'Writing Playbook' }
+  { id:'playbook', icon:'◧', label:'Writing Playbook' },
+  { id:'settings', icon:'⚙', label:'Settings'         }
 ]
 const PLAYBOOK = {
   formats: [
-    { type:'Observation post · Monday',   style:'obs',
-      steps:['Hook — pattern or provocation','The observation itself','Pattern noticed across contexts','Concrete example','The insight / so what','Discussion question to close'] },
-    { type:'Cool Find post · Thursday',   style:'find',
-      steps:['Hook — "Found something..."','What it is (1 line)','Why it matters (the signal)','Specific use case','Who should actually care','CTA — link or question'] },
-    { type:'Experiment post · Saturday/2w', style:'exp',
-      steps:['Hook — the unexpected result','What I actually tried','Why I tried it','The process (brief)','What worked / what failed','Big lesson + CTA'] }
+    { type:'Utility post · Monday',        style:'find',
+      steps:['Hook — pattern or provocation','The utility itself','Why it matters (the signal)','Specific use case','Who should actually care','CTA — link or question'] },
+    { type:'Experiment post · Wednesday',  style:'exp',
+      steps:['Hook — the unexpected result','What I actually tried','Why I tried it','The process (brief)','What worked / what failed','Big lesson + CTA'] },
+    { type:'Observation post · Friday',    style:'obs',
+      steps:['Hook — casual observation or thought','The observation itself','Pattern noticed across contexts','Concrete example','The insight / so what','Discussion question to close'] }
   ],
   voiceAlways:['sharp','thoughtful','strategic','concise','authentic','practical','high-signal','slightly opinionated'],
   voiceNever: ['generic','motivational fluff','cringe growth content','vague','low-signal']
 }
 const DRAFT_TEMPLATES = {
-  observation:{ day:'Monday',          gen:()=>`[Your observation hook here]\n\nHere's what I keep noticing:\n\n→ The pattern:\n[Describe what you're seeing across contexts]\n\nConcrete example:\n[Your specific example]\n\nThe insight:\n[So what does this mean?]\n\n[Discussion question to close]` },
-  find:       { day:'Thursday',        gen:()=>`Found something worth sharing.\n\n[Tool/resource name] — [one-line description]\n\nWhy it matters:\n[The signal — why does this exist now?]\n\nUse case that actually matters:\n→ [Specific use case 1]\n→ [Specific use case 2]\n→ [Specific use case 3]\n\nWho should care:\n[Your audience]\n\n→ [Link]` },
-  experiment: { day:'Saturday (2w)',   gen:()=>`[The unexpected result that hooks them]\n\nWhat I tried:\n[Describe the experiment briefly]\n\nThe process:\n1. [Step 1]\n2. [Step 2]\n3. [Step 3]\n\nWhat worked:\n[Be specific]\n\nWhat failed:\n[Be honest]\n\nBig lesson:\n[The insight that makes this worth sharing]\n\n[Question or CTA]` }
+  observation:{ day:'Friday',          gen:()=>`[Your observation hook here]\n\nHere's what I keep noticing:\n\n→ The pattern:\n[Describe what you're seeing across contexts]\n\nConcrete example:\n[Your specific example]\n\nThe insight:\n[So what does this mean?]\n\n[Discussion question to close]` },
+  find:       { day:'Monday',          gen:()=>`Found something worth sharing.\n\n[Tool/resource name] — [one-line description]\n\nWhy it matters:\n[The signal — why does this exist now?]\n\nUse case that actually matters:\n→ [Specific use case 1]\n→ [Specific use case 2]\n→ [Specific use case 3]\n\nWho should care:\n[Your audience]\n\n→ [Link]` },
+  experiment: { day:'Wednesday',       gen:()=>`[The unexpected result that hooks them]\n\nWhat I tried:\n[Describe the experiment briefly]\n\nThe process:\n1. [Step 1]\n2. [Step 2]\n3. [Step 3]\n\nWhat worked:\n[Be specific]\n\nWhat failed:\n[Be honest]\n\nBig lesson:\n[The insight that makes this worth sharing]\n\n[Question or CTA]` }
 }
 
 /* ─── HELPERS ─── */
 const ICONS  = { obs:'✍', find:'⌘', exp:'◉' }
-const LABELS = { obs:'Observation', find:'Cool Find', exp:'Experiment',
-                 Observation:'obs', 'Cool Find':'find', Experiment:'exp' }
+const LABELS = { obs:'Observation', find:'Utility', exp:'Experiment',
+                 Observation:'obs', Utility:'find', Experiment:'exp' }
 
 function pill(p, label)  { return `<span class="pill ${p}">${label||LABELS[p]||p}</span>` }
 function spill(p)        { return `<span class="spill ${p}">${LABELS[p]||p}</span>` }
@@ -408,6 +413,9 @@ function renderSidebar() {
   ).join('')
   const cadence = CADENCE.map(c=>`<div class="crow"><span class="cdot" style="background:${c.color}"></span>${c.label}</div>`).join('')
   const tagline = (S.profile.tagline||'').replace('\n','<br/>')
+  const liBtn = WEBHOOK_URL
+    ? `<div class="crow" style="margin-top:6px;cursor:pointer" onclick="openWebhookModal()"><span class="cdot" style="background:#0A66C2"></span><span style="color:rgba(255,255,255,.65);font-size:11px">LinkedIn connected ✓</span></div>`
+    : `<div class="crow" style="margin-top:6px;cursor:pointer" onclick="openWebhookModal()"><span class="cdot" style="background:rgba(255,255,255,.15)"></span><span style="color:#E9D94C;font-size:11px;font-weight:600">Connect LinkedIn →</span></div>`
   document.getElementById('sidebar').innerHTML = `
     <div class="logo">
       <div class="logo-name">Brand<span class="logo-dot">.</span>OS</div>
@@ -417,7 +425,10 @@ function renderSidebar() {
       <div class="nl">Views</div>${views}
       <div class="nl">Tools</div>${tools}
     </nav>
-    <div class="sfooter"><div class="ccard"><div class="ctitle">Weekly Cadence</div>${cadence}</div></div>`
+    <div class="sfooter">
+      <div class="ccard"><div class="ctitle">Weekly Cadence</div>${cadence}</div>
+      <div class="ccard" style="margin-top:8px"><div class="ctitle">Accounts</div>${liBtn}</div>
+    </div>`
   // mark active
   document.querySelectorAll('.ni').forEach(n=>{ if(n.dataset.id===currentView) n.classList.add('active') })
 }
@@ -625,7 +636,7 @@ function renderInbox() {
     </div>
     <div class="capture-bar">
       <input class="fi" id="inbox-input" placeholder="Dump a raw idea here..." style="flex:1"/>
-      <select class="fsel" id="inbox-pillar"><option value="">Pillar...</option><option>Observation</option><option>Cool Find</option><option>Experiment</option></select>
+      <select class="fsel" id="inbox-pillar"><option value="">Pillar...</option><option>Observation</option><option>Utility</option><option>Experiment</option></select>
       <select class="fsel" id="inbox-source"><option value="">Source...</option><option>GitHub</option><option>X</option><option>Claude</option><option>Work</option><option>Observation</option><option>Article</option><option>Random Thought</option></select>
       <div class="btn dark" onclick="addInbox()">Add</div>
     </div>
@@ -683,7 +694,7 @@ function renderCalendar() {
   cells += Array(rem).fill('<div class="cv-d empty" style="opacity:.2"></div>').join('')
   document.getElementById('view-calendar').innerHTML = `
     <div class="sh">
-      <div><div class="sh-title">Content Calendar — ${cal.month}</div><div class="sh-sub">Mon = Observation · Thu = Cool Find · Sat/2w = Experiment</div></div>
+      <div><div class="sh-title">Content Calendar — ${cal.month}</div><div class="sh-sub">Mon = Utility · Wed = Experiment · Fri = Observation</div></div>
       <div style="display:flex;gap:8px;align-items:center">${legend}</div>
     </div>
     <div class="cal-view-grid">${headers}${cells}</div>`
@@ -746,14 +757,14 @@ function renderDraft() {
         <div class="ai-ph"><div><div class="ai-lab">Input</div><div class="ai-title">Your Idea</div></div></div>
         <div class="ai-pb">
           <div class="fg"><div class="fl">Raw Idea</div><textarea class="fi" id="draft-idea" rows="3" placeholder="Paste your raw thought, observation or find..."></textarea></div>
-          <div class="fg"><div class="fl">Content Pillar</div><select class="fsel" id="draft-pillar" style="width:100%"><option value="observation">Observation</option><option value="find">Cool Find</option><option value="experiment">Experiment</option></select></div>
+          <div class="fg"><div class="fl">Content Pillar</div><select class="fsel" id="draft-pillar" style="width:100%"><option value="observation">Observation</option><option value="find">Utility</option><option value="experiment">Experiment</option></select></div>
           <div class="fg"><div class="fl">Format</div><select class="fsel" id="draft-format" style="width:100%"><option>Text Post</option><option>Carousel</option><option>Screenshot Commentary</option><option>Breakdown</option><option>Mini Thread</option></select></div>
           <div class="fg"><div class="fl">Source</div><select class="fsel" id="draft-source" style="width:100%"><option>GitHub</option><option>X</option><option>Claude</option><option>Work</option><option>Observation</option><option>Article</option><option>Random Thought</option></select></div>
           <button class="btn dark" style="width:100%;justify-content:center;font-size:12px;padding:10px" onclick="generateDraft()">Generate Draft →</button>
         </div>
       </div>
       <div class="ai-panel">
-        <div class="ai-ph"><div><div class="ai-lab">Output</div><div class="ai-title">LinkedIn Draft</div></div><div><div class="btn light sm" onclick="copyDraft()">Copy</div></div></div>
+        <div class="ai-ph"><div><div class="ai-lab">Output</div><div class="ai-title">LinkedIn Draft</div></div><div style="display:flex;gap:6px"><div class="btn light sm" onclick="copyDraft()">Copy</div><button class="btn dark sm" id="li-post-btn" onclick="postFromDraft()">Post to LinkedIn</button></div></div>
         <div class="ai-pb">
           <div class="draft-out" id="draft-out"><span style="color:var(--muted);font-family:var(--mono);font-size:11px">← Fill in your idea and hit Generate.</span></div>
           <div style="margin-top:12px;padding-top:12px;border-top:1.5px solid var(--border)">
@@ -788,7 +799,7 @@ function renderPlaybook() {
 }
 
 /* ─── NAV ─── */
-const VIEWS = ['dashboard','inbox','pipeline','calendar','lab','library','draft','playbook']
+const VIEWS = ['dashboard','inbox','pipeline','calendar','lab','library','draft','playbook','settings']
 let currentView = 'dashboard'
 
 function go(id, el) {
@@ -846,6 +857,161 @@ function copyDraft() {
   toast('Copied to clipboard ✓')
 }
 
+/* ─── POST VIA WEBHOOK ─── */
+async function postFromDraft() {
+  const text = document.getElementById('draft-out')?.innerText
+  if(!text || text.includes('← Fill in')) { toast('Generate a draft first'); return }
+  if(!WEBHOOK_URL) { openWebhookModal(); return }
+  const btn = document.getElementById('li-post-btn')
+  if(btn) { btn.disabled = true; btn.textContent = 'Posting...' }
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    })
+    if(!res.ok) throw new Error(res.status)
+    toast('Posted to LinkedIn ✓')
+  } catch(e) {
+    toast('Post failed — check webhook URL')
+  }
+  if(btn) { btn.disabled = false; btn.textContent = 'Post to LinkedIn' }
+}
+
+/* ─── WEBHOOK MODAL ─── */
+function openWebhookModal() {
+  const existing = document.getElementById('webhook-modal')
+  if(existing) existing.remove()
+  const m = document.createElement('div')
+  m.id = 'webhook-modal'
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:1000'
+  m.innerHTML = `
+    <div style="background:#fff;border-radius:20px;padding:28px;width:460px;box-shadow:0 8px 40px rgba(0,0,0,.18)">
+      <div style="font-size:16px;font-weight:800;letter-spacing:-.03em;margin-bottom:4px">Connect LinkedIn</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:20px;line-height:1.55">
+        Paste your Make.com or Zapier webhook URL below.<br/>
+        The app will POST <code style="font-size:10px;background:var(--bg);padding:1px 5px;border-radius:4px">{ "text": "..." }</code> to it on every post.
+      </div>
+      <div style="margin-bottom:8px">
+        <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Webhook URL</div>
+        <input id="wh-url-input" class="fi" placeholder="https://hook.eu2.make.com/..." value="${WEBHOOK_URL}" style="font-size:11px"/>
+      </div>
+      <div style="background:var(--bg);border-radius:12px;padding:12px;margin-bottom:16px;font-size:10px;line-height:1.7;color:var(--muted)">
+        <strong style="color:var(--text)">Make.com setup:</strong> New scenario → Add module → Webhooks → Custom webhook → Copy URL<br/>
+        Then add: LinkedIn → Create a Post → Map <code style="background:#fff;padding:1px 4px;border-radius:3px">{{text}}</code> to the commentary field.<br/>
+        <strong style="color:var(--text)">Zapier setup:</strong> New Zap → Trigger: Webhooks by Zapier (Catch Hook) → Action: LinkedIn → Create Share Update
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn light sm" onclick="document.getElementById('webhook-modal').remove()">Cancel</button>
+        ${WEBHOOK_URL?`<button class="btn light sm" style="color:#c00" onclick="disconnectWebhook()">Disconnect</button>`:''}
+        <button class="btn dark sm" onclick="saveWebhook()">Save & Connect</button>
+      </div>
+    </div>`
+  m.addEventListener('click', e => { if(e.target===m) m.remove() })
+  document.body.appendChild(m)
+  document.getElementById('wh-url-input').focus()
+}
+
+function saveWebhook() {
+  const val = document.getElementById('wh-url-input')?.value.trim()
+  if(!val) { toast('Paste a webhook URL first'); return }
+  WEBHOOK_URL = val
+  localStorage.setItem('pbos_webhook', val)
+  document.getElementById('webhook-modal')?.remove()
+  renderSidebar()
+  toast('LinkedIn webhook saved ✓')
+}
+
+function disconnectWebhook() {
+  WEBHOOK_URL = ''
+  localStorage.removeItem('pbos_webhook')
+  document.getElementById('webhook-modal')?.remove()
+  renderSidebar()
+  toast('Disconnected')
+}
+
+/* ─── SETTINGS ─── */
+function renderSettings() {
+  document.getElementById('view-settings').innerHTML = `
+    <div class="sh">
+      <div><div class="sh-title">Settings</div><div class="sh-sub">Connections · profile · preferences</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+      <div style="background:#fff;border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:36px;height:36px;border-radius:10px;background:#e8f0fc;display:flex;align-items:center;justify-content:center;font-size:18px">in</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;letter-spacing:-.01em">LinkedIn</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px" id="li-status-text">${WEBHOOK_URL ? '✓ Webhook connected' : 'Not connected'}</div>
+          </div>
+          <div id="li-status-dot" style="width:8px;height:8px;border-radius:50%;margin-left:auto;background:${WEBHOOK_URL ? '#4CAF50' : 'var(--border)'}"></div>
+        </div>
+        <div>
+          <div class="fl" style="margin-bottom:5px">Make.com / Zapier Webhook URL</div>
+          <input class="fi" id="settings-webhook" placeholder="https://hook.eu2.make.com/..." value="${WEBHOOK_URL}" style="font-size:11px"/>
+        </div>
+        <div style="font-size:10px;color:var(--muted);background:var(--bg);border-radius:10px;padding:10px 12px;line-height:1.65">
+          The app POSTs <code style="background:#fff;padding:1px 4px;border-radius:3px;font-size:9px">{ "text": "..." }</code> to this URL on every publish.<br/>
+          Make.com: Webhooks → Custom webhook → LinkedIn: Create a Post → map <code style="background:#fff;padding:1px 4px;border-radius:3px;font-size:9px">text</code> field.
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn dark sm" style="flex:1;justify-content:center" onclick="saveSettingsWebhook()">Save webhook</button>
+          ${WEBHOOK_URL ? `<button class="btn light sm" onclick="disconnectSettingsWebhook()" style="color:#c00;border-color:#fcc">Disconnect</button>` : ''}
+        </div>
+      </div>
+
+      <div style="background:#fff;border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-size:13px;font-weight:700;letter-spacing:-.01em">Profile</div>
+        <div>
+          <div class="fl" style="margin-bottom:5px">Display Name</div>
+          <input class="fi" id="settings-name" placeholder="Your name" value="${S.profile.name||''}" style="font-size:11px"/>
+        </div>
+        <div>
+          <div class="fl" style="margin-bottom:5px">Tagline</div>
+          <input class="fi" id="settings-tagline" placeholder="Your brand tagline" value="${S.profile.tagline||''}" style="font-size:11px"/>
+        </div>
+        <div>
+          <div class="fl" style="margin-bottom:5px">Best Streak</div>
+          <input class="fi" id="settings-streak" placeholder="e.g. 6w" value="${S.profile.streak_best||''}" style="font-size:11px"/>
+        </div>
+        <button class="btn dark sm" style="justify-content:center" onclick="saveProfile()">Save profile</button>
+      </div>
+
+    </div>`
+}
+
+async function saveSettingsWebhook() {
+  const val = document.getElementById('settings-webhook')?.value.trim()
+  if(!val) { toast('Paste a webhook URL first'); return }
+  WEBHOOK_URL = val
+  localStorage.setItem('pbos_webhook', val)
+  renderSidebar()
+  renderSettings()
+  toast('LinkedIn webhook saved ✓')
+}
+
+function disconnectSettingsWebhook() {
+  WEBHOOK_URL = ''
+  localStorage.removeItem('pbos_webhook')
+  renderSidebar()
+  renderSettings()
+  toast('Disconnected')
+}
+
+async function saveProfile() {
+  const name    = document.getElementById('settings-name')?.value.trim()
+  const tagline = document.getElementById('settings-tagline')?.value.trim()
+  const streak_best = document.getElementById('settings-streak')?.value.trim()
+  const { error } = await sb.from('profile').upsert({ id: S.profile.id||1, name, tagline, streak_best })
+  if(error) { toast('Error: '+error.message); return }
+  S.profile = { ...S.profile, name, tagline, streak_best }
+  renderSidebar()
+  renderDashboard()
+  toast('Profile saved ✓')
+}
+
 /* ─── INIT ─── */
 async function init() {
   renderSidebar()
@@ -860,6 +1026,7 @@ async function init() {
   renderLibrary()
   renderDraft()
   renderPlaybook()
+  renderSettings()
 }
 
 init()
