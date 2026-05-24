@@ -1105,184 +1105,187 @@ function todayISO() {
   return new Date().toISOString().split('T')[0]
 }
 
+// Week 1 anchor = Monday May 25
+const WEEK_ANCHOR = new Date('2026-05-25T00:00:00')
+
+// Slot definitions — 3 fixed posting slots, no per-slot webhook (uses master)
+const SLOT_DEFS = [
+  { id:'mon', dayOffset:0, time:'09:00', label:'Monday',    pillar:'find', pillarLabel:'Utility',     color:'var(--yellow)', colorT:'var(--yellow-t)' },
+  { id:'wed', dayOffset:2, time:'11:00', label:'Wednesday', pillar:'exp',  pillarLabel:'Experiment',  color:'var(--pink)',   colorT:'var(--pink-t)'   },
+  { id:'fri', dayOffset:4, time:'10:00', label:'Friday',    pillar:'obs',  pillarLabel:'Observation', color:'var(--blue)',   colorT:'var(--blue-t)'   }
+]
+
 function renderSchedule() {
-  const now = new Date()
+  const now     = new Date()
   const todayStr = todayISO()
+  const connected = !!WEBHOOK_URL
 
-  // Build slot cards
-  const slotColors = { mon:'var(--yellow)', wed:'var(--pink)', fri:'var(--blue)' }
-  const slotPillarKey = { mon:'find', wed:'exp', fri:'obs' }
-
-  const slotCards = SCHED_CFG.slots.map(slot => {
-    const color = slotColors[slot.id] || 'var(--bg)'
-    const pillarKey = slotPillarKey[slot.id]
-    // Find next queued post for this slot
+  // ── Slot toggle cards (simplified — no per-slot webhook) ──────────────────
+  const slotCards = SLOT_DEFS.map(def => {
+    const cfg = SCHED_CFG.slots.find(s=>s.id===def.id) || {}
+    const isOn = cfg.active && connected
     const nextItem = S.pipeline.find(p =>
-      p.stage === 'scheduled' && p.pillar === pillarKey &&
-      p.scheduled_date && p.scheduled_date >= todayStr
+      p.stage==='scheduled' && p.pillar===def.pillar && p.scheduled_date >= todayStr
     )
     const nextText = nextItem
-      ? `<strong>${nextItem.title}</strong><br/>${fmtDate(nextItem.scheduled_date)}`
-      : 'No post queued for this slot'
-    const statusColor = slot.active && slot.webhook ? '#4CAF50' : slot.active ? '#FF9800' : 'var(--border)'
-    const statusText  = slot.active && slot.webhook ? 'Auto-post ON' : slot.active ? 'No webhook set' : 'Off'
+      ? `<strong style="color:var(--text)">${nextItem.title.slice(0,42)}</strong><br/><span style="color:var(--muted)">${fmtDate(nextItem.scheduled_date)}</span>`
+      : `<span style="color:var(--muted);font-style:italic">No post queued</span>`
 
-    return `<div class="slot-card${slot.active?' active':''}">
+    return `<div class="slot-card${isOn?' active':''}">
       <div class="slot-head">
         <div>
-          <div class="slot-day">${slot.label}</div>
-          <div class="slot-pillar">${slot.pillar} · ${slot.time}</div>
+          <div class="slot-day">${def.label}</div>
+          <div class="slot-pillar">${def.pillarLabel} · ${def.time}</div>
         </div>
-        <div onclick="toggleSlot('${slot.id}')" class="toggle ${slot.active?'on':'off'}">
+        <div onclick="toggleSlot('${def.id}')" class="toggle ${cfg.active?'on':'off'}" title="${connected?'':'Connect LinkedIn first in Settings'}">
           <div class="toggle-knob"></div>
         </div>
       </div>
-      <div class="slot-status"><span class="sdot" style="background:${statusColor}"></span>${statusText}</div>
-      <div class="slot-next">${nextText}</div>
-      <div>
-        <div class="fl" style="margin-bottom:5px">Webhook URL <span style="font-weight:400;text-transform:none">(Make.com / Zapier)</span></div>
-        <div style="display:flex;gap:6px">
-          <input class="fi" id="wh-${slot.id}" placeholder="https://hook.eu2.make.com/..." value="${slot.webhook}" style="font-size:10px;flex:1"/>
-          <div class="btn dark sm" onclick="saveSlotWebhook('${slot.id}')">Save</div>
-        </div>
+      <div class="slot-status">
+        <span class="sdot" style="background:${isOn?'#4CAF50':cfg.active&&!connected?'#FF9800':'var(--border)'}"></span>
+        ${isOn ? 'Auto-post ON' : cfg.active && !connected ? 'Connect LinkedIn to activate' : 'Auto-post off'}
       </div>
-      <div style="display:flex;gap:6px">
-        <div class="btn light sm" style="flex:1;justify-content:center" onclick="testSlot('${slot.id}')">Test ping</div>
-        <div class="btn dark sm" style="flex:1;justify-content:center" onclick="triggerSlot('${slot.id}')">▶ Post Now</div>
-      </div>
+      <div class="slot-next" style="font-size:10px;line-height:1.55">${nextText}</div>
+      <div class="btn dark sm" style="width:100%;justify-content:center;margin-top:4px" onclick="triggerSlot('${def.id}')">▶ Post Now</div>
     </div>`
   }).join('')
 
-  // Due today items
-  const dueItems = S.pipeline.filter(p => p.stage === 'scheduled' && p.scheduled_date === todayStr)
+  // ── Due today banner ──────────────────────────────────────────────────────
+  const dueItems = S.pipeline.filter(p => p.stage==='scheduled' && p.scheduled_date===todayStr)
   const dueBanner = dueItems.length
     ? `<div class="due-banner">
         <div>
           <div class="due-title">⏰ ${dueItems.length} post${dueItems.length>1?'s':''} due today</div>
           <div class="due-sub">${dueItems.map(p=>p.title).join(' · ')}</div>
         </div>
-        <div style="display:flex;gap:7px">
-          ${dueItems.map(p=>`<div class="btn dark sm" onclick="postItemNow(${p.id})">${p.title.slice(0,22)}… Post Now</div>`).join('')}
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          ${dueItems.map(p=>`<div class="btn dark sm" onclick="postItemNow(${p.id})">▶ ${p.title.slice(0,20)}…</div>`).join('')}
         </div>
       </div>`
     : ''
 
-  // Upcoming queue (next 14 days)
-  const upcoming = S.pipeline
-    .filter(p => p.stage === 'scheduled' && p.scheduled_date && p.scheduled_date >= todayStr)
-    .sort((a,b) => a.scheduled_date.localeCompare(b.scheduled_date))
-    .slice(0, 12)
+  // ── Week grid ─────────────────────────────────────────────────────────────
+  // Show 8 weeks starting from anchor (Week 1 = May 25)
+  let weeksHtml = ''
+  for(let w=0; w<8; w++) {
+    const wStart = new Date(WEEK_ANCHOR)
+    wStart.setDate(WEEK_ANCHOR.getDate() + w*7)
+    const wEnd = new Date(wStart); wEnd.setDate(wStart.getDate()+6)
+    const isCurrent = wStart <= now && now <= wEnd
+    const isPast = wEnd < now
 
-  const queueRows = upcoming.length
-    ? upcoming.map(p => {
-        const bg = p.pillar==='obs'?'var(--yellow-t)':p.pillar==='exp'?'var(--pink-t)':'var(--blue-t)'
-        const isToday = p.scheduled_date === todayStr
-        return `<div class="queue-item">
-          <div class="queue-date">${isToday?'<strong>Today</strong>':fmtDate(p.scheduled_date)}</div>
-          <div class="queue-dot" style="background:${bg}">${ICONS[p.pillar]||'✦'}</div>
-          <div class="queue-info">
-            <div class="queue-title">${p.title}</div>
-            <div class="queue-meta">${LABELS[p.pillar]||p.pillar} · ${p.format||'Text Post'}</div>
-          </div>
-          <div style="display:flex;gap:6px;align-items:center">
-            ${p.draft_content?'<span style="font-size:9px;color:var(--muted);font-family:var(--mono)">✎ draft</span>':'<span style="font-size:9px;color:#b55;font-family:var(--mono)">no draft</span>'}
-            <div class="btn dark sm" onclick="postItemNow(${p.id})">Post Now</div>
-            <div class="btn light sm" onclick="openPipelineEdit(${p.id})">Edit</div>
-          </div>
-        </div>`
-      }).join('')
-    : emptyState('◻','No scheduled posts yet — move pipeline items to Scheduled stage and set a date')
+    const wStartFmt = wStart.toLocaleDateString('en-US',{month:'short',day:'numeric'})
+    const wEndFmt   = wEnd.toLocaleDateString('en-US',{month:'short',day:'numeric'})
 
-  // Auto-post history
-  const hist = JSON.parse(localStorage.getItem('pbos_post_hist')||'[]').slice(0,8)
+    // Count scheduled + posted slots this week
+    const slotDates = SLOT_DEFS.map(def => {
+      const d = new Date(wStart); d.setDate(wStart.getDate()+def.dayOffset)
+      return d.toISOString().split('T')[0]
+    })
+    const scheduledCount = S.pipeline.filter(p=>
+      (p.stage==='scheduled'||p.stage==='posting') && slotDates.includes(p.scheduled_date)
+    ).length
+    const postedCount = S.pipeline.filter(p=>
+      p.stage==='posted' && slotDates.includes(p.scheduled_date)
+    ).length
+
+    // Slot rows
+    const slotRows = SLOT_DEFS.map(def => {
+      const slotDate = new Date(wStart)
+      slotDate.setDate(wStart.getDate() + def.dayOffset)
+      const slotDateStr = slotDate.toISOString().split('T')[0]
+      const isToday  = slotDateStr === todayStr
+      const isPastDate = slotDate < now && !isToday
+
+      const item       = S.pipeline.find(p => p.stage==='scheduled' && p.scheduled_date===slotDateStr)
+      const postedItem = S.pipeline.find(p => (p.stage==='posted'||p.stage==='posting') && p.scheduled_date===slotDateStr)
+      const dayLabel   = slotDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})
+
+      let rightContent = ''
+      if(postedItem) {
+        rightContent = `
+          <div style="flex:1;min-width:0">
+            <div style="font-size:11px;font-weight:600;color:var(--muted);text-decoration:line-through;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${postedItem.title}</div>
+          </div>
+          <span style="font-size:9px;font-family:var(--mono);color:${postedItem.stage==='posting'?'#FF9800':'#4CAF50'}">${postedItem.stage==='posting'?'⏳ posting…':'✓ posted'}</span>`
+      } else if(item) {
+        rightContent = `
+          <div style="flex:1;min-width:0">
+            <div style="font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.title}</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:1px">${item.draft_content?'✎ draft ready':'⚠ no draft — click Edit'}</div>
+          </div>
+          <div style="display:flex;gap:5px;flex-shrink:0">
+            <div class="btn light sm" onclick="openPipelineEdit(${item.id})">Edit</div>
+            ${!isPastDate&&item.draft_content?`<div class="btn dark sm" onclick="postItemNow(${item.id})">▶ Post</div>`:''}
+          </div>`
+      } else {
+        rightContent = `
+          <div style="flex:1;font-size:11px;color:var(--muted);font-style:italic">Empty slot</div>
+          ${!isPastDate?`<div class="btn light sm" onclick="quickScheduleSlot('${slotDateStr}','${def.pillar}')">+ Schedule</div>`:''}`
+      }
+
+      return `<div style="display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--border);${isToday?'background:rgba(233,217,76,.06);':''}${isPastDate&&!postedItem?'opacity:.4;':''}" >
+        <div style="width:5px;height:32px;border-radius:3px;background:${def.color};flex-shrink:0"></div>
+        <div style="width:140px;flex-shrink:0">
+          <div style="font-size:11px;font-weight:${isToday?800:600};color:${isToday?'var(--text)':'var(--muted)'}">${dayLabel}${isToday?' ◉':''}</div>
+          <div style="font-size:9px;color:var(--muted);font-family:var(--mono);margin-top:1px">${def.time} · ${def.pillarLabel}</div>
+        </div>
+        ${rightContent}
+      </div>`
+    }).join('')
+
+    weeksHtml += `
+      <div style="background:#fff;border-radius:18px;overflow:hidden;border:1.5px solid ${isCurrent?'var(--olive)':'transparent'};${isPast?'opacity:.7':''}">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:${isCurrent?'rgba(168,196,106,.1)':'var(--bg)'};border-bottom:1.5px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="font-size:14px;font-weight:800;letter-spacing:-.03em">Week ${w+1}</div>
+            <div style="font-size:10px;color:var(--muted);font-weight:500">${wStartFmt} – ${wEndFmt}</div>
+            ${isCurrent?`<span style="font-size:8px;font-weight:700;background:var(--olive);color:#1a3a00;padding:2px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em">Current</span>`:''}
+            ${isPast?`<span style="font-size:8px;color:var(--muted);font-family:var(--mono)">past</span>`:''}
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:9px;font-family:var(--mono);color:var(--muted)">${postedCount} posted · ${scheduledCount} queued</span>
+          </div>
+        </div>
+        ${slotRows}
+      </div>`
+  }
+
+  // ── Post history sidebar ──────────────────────────────────────────────────
+  const hist = JSON.parse(localStorage.getItem('pbos_post_hist')||'[]').slice(0,10)
   const histRows = hist.length
-    ? hist.map(h=>`<div class="hist-item"><div class="hist-time">${h.time}</div><div class="hist-icon">${h.icon||'✦'}</div><div style="flex:1;font-size:11px;font-weight:500">${h.title}</div><span class="status-pill posted" style="font-size:8px">${h.how}</span></div>`).join('')
+    ? hist.map(h=>`<div class="hist-item"><div class="hist-time">${h.time}</div><div class="hist-icon">${h.icon||'✦'}</div><div style="flex:1;font-size:11px;font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.title}</div><span class="status-pill posted" style="font-size:8px;flex-shrink:0">${h.how}</span></div>`).join('')
     : `<div style="font-size:11px;color:var(--muted);padding:8px 0">No posts fired yet</div>`
-
-  // Setup guide
-  const sbUrl = `https://jmsaxwqisykrlnlifsjp.supabase.co/rest/v1/pipeline?stage=eq.scheduled&scheduled_date=eq.${todayStr}&select=*`
-  const sbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imptc2F4d3Fpc3lrcmxubGlmc2pwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwMzY1NjcsImV4cCI6MjA5NDYxMjU2N30.QMVWUTZP1b6Z6XH8qV5jYLas6NxaYIkgNuQd-nAdqos'
 
   document.getElementById('view-schedule').innerHTML = `
     <div class="sh">
       <div>
         <div class="sh-title">Schedule Mode</div>
-        <div class="sh-sub">Automated LinkedIn posting · Mon / Wed / Fri</div>
+        <div class="sh-sub">Week 1 from May 25 · Mon 9AM · Wed 11AM · Fri 10AM</div>
       </div>
-      <div style="display:flex;gap:7px;align-items:center">
-        <span style="font-size:9px;font-family:var(--mono);color:var(--muted)">Browser scheduler: </span>
-        <span id="sched-status" style="font-size:9px;font-family:var(--mono);color:${_schedInterval?'#4CAF50':'var(--muted)'}">${_schedInterval?'● running':'○ paused'}</span>
-        <div class="btn dark sm" onclick="startScheduler();renderSchedule()">${_schedInterval?'↺ Restart':'▶ Start'} Scheduler</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div style="display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--border);border-radius:50px;padding:5px 14px">
+          <span style="width:7px;height:7px;border-radius:50%;background:${connected?'#4CAF50':'var(--border)'}"></span>
+          <span style="font-size:10px;font-weight:600">${connected?'LinkedIn connected':'No webhook — connect in Settings'}</span>
+          ${!connected?`<span onclick="go('settings',null)" style="font-size:10px;font-weight:700;color:var(--text);cursor:pointer;margin-left:4px">→</span>`:''}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--border);border-radius:50px;padding:5px 14px">
+          <span style="width:7px;height:7px;border-radius:50%;background:${_schedInterval?'#4CAF50':'var(--border)'}"></span>
+          <span style="font-size:10px;font-weight:600">${_schedInterval?'Scheduler running':'Scheduler off'}</span>
+        </div>
+        <div class="btn dark sm" onclick="startScheduler();renderSchedule()">${_schedInterval?'↺ Restart':'▶ Start'}</div>
       </div>
     </div>
 
     ${dueBanner}
-
     <div class="sched-grid">${slotCards}</div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-      <div style="background:#fff;border-radius:18px;padding:18px">
-        <div style="font-size:13px;font-weight:700;margin-bottom:14px;letter-spacing:-.01em">Upcoming Queue</div>
-        ${queueRows}
-      </div>
-      <div class="sched-hist">
-        <div style="font-size:13px;font-weight:700;margin-bottom:14px;letter-spacing:-.01em">Post History</div>
-        ${histRows}
-      </div>
-    </div>
-
-    <div class="setup-guide">
-      <div style="font-size:13px;font-weight:700;margin-bottom:4px">Make.com Auto-Post Setup</div>
-      <div style="font-size:10px;color:var(--muted);margin-bottom:16px">Set this up once and posts fire automatically even when the browser is closed</div>
-      <div class="sg-step">
-        <div class="sg-n">1</div>
-        <div class="sg-body">
-          <div class="sg-title">Create a new scenario in Make.com</div>
-          <div class="sg-sub">make.com → Create new scenario → Start with a trigger module</div>
-        </div>
-      </div>
-      <div class="sg-step">
-        <div class="sg-n">2</div>
-        <div class="sg-body">
-          <div class="sg-title">Add Schedule trigger</div>
-          <div class="sg-sub">Module: Schedule → Set to run at your posting time (e.g. Monday 9:00 AM)</div>
-        </div>
-      </div>
-      <div class="sg-step">
-        <div class="sg-n">3</div>
-        <div class="sg-body">
-          <div class="sg-title">Fetch today's scheduled post from Supabase</div>
-          <div class="sg-sub">Module: HTTP → Make a request<br/>
-            URL: <span class="code-pill" onclick="copyCode(this)">${sbUrl}</span><br/>
-            Headers: <span class="code-pill" onclick="copyCode(this)">apikey: ${sbKey.slice(0,40)}…</span><br/>
-            Also add header: <span class="code-pill" onclick="copyCode(this)">Authorization: Bearer [same key]</span>
-          </div>
-        </div>
-      </div>
-      <div class="sg-step">
-        <div class="sg-n">4</div>
-        <div class="sg-body">
-          <div class="sg-title">Post to LinkedIn</div>
-          <div class="sg-sub">Module: LinkedIn → Create a Post<br/>
-            Map <span class="code-pill">draft_content</span> from the HTTP response to the post body field</div>
-        </div>
-      </div>
-      <div class="sg-step">
-        <div class="sg-n">5</div>
-        <div class="sg-body">
-          <div class="sg-title">Mark post as "posted" in Supabase</div>
-          <div class="sg-sub">Module: HTTP → Make a request (PATCH)<br/>
-            URL: <span class="code-pill" onclick="copyCode(this)">https://jmsaxwqisykrlnlifsjp.supabase.co/rest/v1/pipeline?id=eq.{{id}}</span><br/>
-            Body: <span class="code-pill" onclick="copyCode(this)">{"stage":"posted"}</span><br/>
-            Add the same <span class="code-pill">apikey</span> + <span class="code-pill">Authorization</span> headers + <span class="code-pill">Content-Type: application/json</span> + <span class="code-pill">Prefer: return=representation</span>
-          </div>
-        </div>
-      </div>
-      <div class="sg-step">
-        <div class="sg-n">6</div>
-        <div class="sg-body">
-          <div class="sg-title">Copy the Make.com webhook URL into the slot above</div>
-          <div class="sg-sub">In Make.com: Webhooks → Custom webhook → Copy URL → paste into the slot's Webhook URL above and hit Save. This lets you trigger it manually from the app too.</div>
+    <div style="display:grid;grid-template-columns:1fr 300px;gap:14px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:10px">${weeksHtml}</div>
+      <div style="position:sticky;top:20px;display:flex;flex-direction:column;gap:10px">
+        <div class="sched-hist">
+          <div style="font-size:13px;font-weight:700;margin-bottom:14px;letter-spacing:-.01em">Post History</div>
+          ${histRows}
         </div>
       </div>
     </div>`
@@ -1291,65 +1294,52 @@ function renderSchedule() {
 function toggleSlot(id) {
   const slot = SCHED_CFG.slots.find(s=>s.id===id)
   if(!slot) return
+  if(!slot.active && !WEBHOOK_URL) { toast('Connect LinkedIn in Settings first'); go('settings',null); return }
   slot.active = !slot.active
   localStorage.setItem('pbos_sched', JSON.stringify(SCHED_CFG))
   renderSchedule()
-  toast(slot.active ? `${slot.label} slot enabled` : `${slot.label} slot disabled`)
-}
-
-function saveSlotWebhook(id) {
-  const slot = SCHED_CFG.slots.find(s=>s.id===id)
-  if(!slot) return
-  const val = document.getElementById('wh-'+id)?.value.trim()
-  slot.webhook = val || ''
-  if(val) slot.active = true
-  localStorage.setItem('pbos_sched', JSON.stringify(SCHED_CFG))
-  renderSchedule()
-  toast(`${slot.label} webhook saved ✓`)
+  toast(slot.active ? `${SLOT_DEFS.find(d=>d.id===id)?.label} auto-post enabled` : `${SLOT_DEFS.find(d=>d.id===id)?.label} auto-post disabled`)
 }
 
 async function testSlot(id) {
-  const slot = SCHED_CFG.slots.find(s=>s.id===id)
-  if(!slot?.webhook) { toast('Save a webhook URL first'); return }
-  toast(`Sending test to ${slot.label}...`)
+  if(!WEBHOOK_URL) { toast('Connect LinkedIn webhook in Settings first'); return }
+  const def = SLOT_DEFS.find(d=>d.id===id)
+  toast(`Sending test ping for ${def?.label||id}...`)
   try {
-    const res = await fetch(slot.webhook, {
+    const res = await fetch(WEBHOOK_URL, {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ text:`🧪 Test ping from Brand OS — ${slot.label} slot is connected!` })
+      body: JSON.stringify({ text:`🧪 Test ping from Brand OS — ${def?.label} slot (${def?.pillarLabel}) is wired up!` })
     })
     if(!res.ok) throw new Error('HTTP '+res.status)
-    toast(`Test ping sent ✓ — check Make.com/Zapier`)
+    toast(`Test ping sent ✓ — check Make.com`)
   } catch(e) { toast('Ping failed: '+e.message) }
 }
 
 async function triggerSlot(id) {
-  const slot = SCHED_CFG.slots.find(s=>s.id===id)
-  if(!slot) return
-  if(!slot.webhook) { toast('No webhook URL for this slot'); return }
-  const pillarKey = { mon:'find', wed:'exp', fri:'obs' }[id]
+  if(!WEBHOOK_URL) { toast('Connect LinkedIn webhook in Settings first'); go('settings',null); return }
+  const def = SLOT_DEFS.find(d=>d.id===id)
   const todayStr = todayISO()
+  // Find next due post for this pillar
   const item = S.pipeline.find(p =>
-    p.stage === 'scheduled' && p.pillar === pillarKey &&
-    p.scheduled_date && p.scheduled_date <= todayStr &&
-    p.draft_content
+    p.stage==='scheduled' && p.pillar===def.pillar &&
+    p.scheduled_date && p.scheduled_date <= todayStr && p.draft_content
   ) || S.pipeline.find(p =>
-    p.stage === 'scheduled' && p.draft_content
+    p.stage==='scheduled' && p.pillar===def.pillar && p.draft_content
   )
-  if(!item) { toast('No scheduled post with draft content for this slot'); return }
-  await _firePost(item, slot, 'manual')
+  if(!item) { toast(`No ${def.pillarLabel} post with a draft ready`); return }
+  await _firePost(item, { webhook: WEBHOOK_URL, label: def.label }, 'manual')
+}
+
+function quickScheduleSlot(dateStr, pillar) {
+  _showPipelineModal({ id:null, title:'', pillar, stage:'scheduled', format:'Text Post', draft_content:'', scheduled_date:dateStr, priority:3 })
 }
 
 async function postItemNow(id) {
   const item = S.pipeline.find(p=>p.id===id)
   if(!item) return
   if(!item.draft_content) { openPipelineEdit(id); toast('Write the draft first, then Post Now'); return }
-  // find matching slot webhook or fall back to global webhook
-  const pillarSlot = { find:'mon', exp:'wed', obs:'fri' }
-  const slotId = pillarSlot[item.pillar]
-  const slot = SCHED_CFG.slots.find(s=>s.id===slotId)
-  const wh = slot?.webhook || WEBHOOK_URL
-  if(!wh) { openWebhookModal(); return }
-  await _firePost(item, { webhook: wh, label: slot?.label||'LinkedIn' }, 'manual')
+  if(!WEBHOOK_URL) { toast('Connect LinkedIn webhook in Settings first'); go('settings',null); return }
+  await _firePost(item, { webhook: WEBHOOK_URL, label:'LinkedIn' }, 'manual')
 }
 
 async function _firePost(item, slot, how) {
