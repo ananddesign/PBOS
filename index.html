@@ -672,20 +672,26 @@ function renderDashboard() {
 /* ─── INBOX ─── */
 function renderInbox() {
   const rows = S.inbox.map((item,i)=>{
-    const pc = LABELS[item.pillar]
+    const pc = LABELS[item.pillar] || 'obs'  // converts 'Observation'→'obs' etc.
+    const safeIdea = (item.idea||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')
     return `<tr>
       <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${String(i+1).padStart(2,'0')}</td>
       <td style="font-size:11px;font-weight:500;max-width:200px">${item.idea}</td>
-      <td>${pill(pc||'obs', item.pillar)}</td>
+      <td>${pill(pc, item.pillar)}</td>
       <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${item.source||'—'}</td>
       <td style="font-family:var(--mono);font-size:9px;color:var(--muted)">${item.format||'Text Post'}</td>
       <td>${prio(item.priority||3)}</td>
-      <td><div class="btn dark sm" onclick="draftFrom('${pc||'obs'}','${(item.idea||'').replace(/'/g,"\\'")}')">Draft →</div></td>
+      <td style="white-space:nowrap">
+        <div style="display:flex;gap:5px">
+          <div class="btn light sm" onclick="openSlotPicker(${item.id})">📅 Schedule</div>
+          <div class="btn dark sm" onclick="draftFrom('${pc}','${safeIdea}')">Draft →</div>
+        </div>
+      </td>
     </tr>`
   }).join('')
   document.getElementById('view-inbox').innerHTML = `
     <div class="sh">
-      <div><div class="sh-title">Inbox</div><div class="sh-sub">Quick capture · classify later</div></div>
+      <div><div class="sh-title">Inbox</div><div class="sh-sub">Quick capture · schedule or draft</div></div>
       <div class="btn dark sm" onclick="go('draft',null)">Process with AI →</div>
     </div>
     <div class="capture-bar">
@@ -695,7 +701,7 @@ function renderInbox() {
       <div class="btn dark" onclick="addInbox()">Add</div>
     </div>
     ${S.inbox.length
-      ? `<table class="db-table"><thead><tr><th>#</th><th>Raw Idea</th><th>Pillar</th><th>Source</th><th>Format</th><th>Priority</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`
+      ? `<table class="db-table"><thead><tr><th>#</th><th>Raw Idea</th><th>Pillar</th><th>Source</th><th>Format</th><th>Priority</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`
       : emptyState('✦','Your inbox is empty — capture your next idea above')}`
 }
 
@@ -1219,9 +1225,14 @@ function renderSchedule() {
             ${!isPastDate&&item.draft_content?`<div class="btn dark sm" onclick="postItemNow(${item.id})">▶ Post</div>`:''}
           </div>`
       } else {
+        const inboxCount = S.inbox.length
         rightContent = `
-          <div style="flex:1;font-size:11px;color:var(--muted);font-style:italic">Empty slot</div>
-          ${!isPastDate?`<div class="btn light sm" onclick="quickScheduleSlot('${slotDateStr}','${def.pillar}')">+ Schedule</div>`:''}`
+          <div style="flex:1;font-size:11px;color:var(--muted);font-style:italic">Empty slot${inboxCount?` · ${inboxCount} idea${inboxCount!==1?'s':''} in inbox`:''}</div>
+          ${!isPastDate ? `
+            <div style="display:flex;gap:5px">
+              ${inboxCount ? `<div class="btn light sm" onclick="openInboxPicker('${slotDateStr}','${def.pillar}')">← Inbox</div>` : ''}
+              <div class="btn light sm" onclick="quickScheduleSlot('${slotDateStr}','${def.pillar}')">+ New</div>
+            </div>` : ''}`
       }
 
       return `<div style="display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--border);${isToday?'background:rgba(233,217,76,.06);':''}${isPastDate&&!postedItem?'opacity:.4;':''}" >
@@ -1451,6 +1462,142 @@ async function markPosted(id) {
   if(error) { toast('Error: '+error.message); return }
   toast('Marked as posted ✓')
   await loadAll(); renderPipeline(); renderDashboard(); renderSidebar()
+}
+
+/* ─── INBOX → SCHEDULE ─── */
+
+// Called from Inbox row — pick which week slot to send this idea to
+function openSlotPicker(inboxId) {
+  const item = S.inbox.find(i=>i.id===inboxId)
+  if(!item) return
+  document.getElementById('slot-picker-modal')?.remove()
+
+  let weeksHtml = ''
+  const now = new Date()
+  for(let w=0; w<8; w++) {
+    const wStart = new Date(WEEK_ANCHOR)
+    wStart.setDate(WEEK_ANCHOR.getDate() + w*7)
+    const wEnd   = new Date(wStart); wEnd.setDate(wStart.getDate()+6)
+    const wLabel = `${wStart.toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${wEnd.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`
+    const isPastWeek = wEnd < now
+
+    const slotBtns = SLOT_DEFS.map(def => {
+      const d = new Date(wStart); d.setDate(wStart.getDate()+def.dayOffset)
+      const dateStr  = d.toISOString().split('T')[0]
+      const isPast   = d < now
+      const taken    = S.pipeline.find(p => (p.stage==='scheduled'||p.stage==='posting') && p.scheduled_date===dateStr)
+      const dayFmt   = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})
+
+      if(isPast) return `<div style="opacity:.3;display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:10px;background:var(--bg)">
+          <div><div style="font-size:11px;font-weight:600">${def.label}</div><div style="font-size:9px;color:var(--muted)">${dayFmt} · ${def.pillarLabel}</div></div>
+          <span style="font-size:9px;font-family:var(--mono);color:var(--muted)">past</span>
+        </div>`
+
+      if(taken) return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:10px;background:var(--bg);opacity:.55">
+          <div><div style="font-size:11px;font-weight:600">${def.label}</div><div style="font-size:9px;color:var(--muted)">${dayFmt} · ${def.pillarLabel}</div></div>
+          <span style="font-size:9px;font-family:var(--mono);color:var(--muted)">taken: ${taken.title.slice(0,28)}</span>
+        </div>`
+
+      return `<div onclick="scheduleFromInbox(${inboxId},'${dateStr}','${def.pillar}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:10px;background:${def.colorT};cursor:pointer;border:1.5px solid transparent;transition:border-color .12s" onmouseover="this.style.borderColor='var(--text)'" onmouseout="this.style.borderColor='transparent'">
+          <div>
+            <div style="font-size:11px;font-weight:700">${def.label} <span style="font-weight:500;opacity:.7">· ${def.pillarLabel}</span></div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px">${dayFmt} at ${def.time}</div>
+          </div>
+          <div class="btn dark sm">Schedule</div>
+        </div>`
+    }).join('')
+
+    weeksHtml += `<div style="margin-bottom:14px;${isPastWeek?'opacity:.4':''}">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:7px">Week ${w+1} · ${wLabel}</div>
+      <div style="display:flex;flex-direction:column;gap:5px">${slotBtns}</div>
+    </div>`
+  }
+
+  const m = document.createElement('div')
+  m.id = 'slot-picker-modal'
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px'
+  m.innerHTML = `
+    <div style="background:#fff;border-radius:22px;padding:26px;width:480px;max-height:88vh;overflow-y:auto;box-shadow:0 12px 50px rgba(0,0,0,.2)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div style="font-size:16px;font-weight:800;letter-spacing:-.03em;margin-bottom:4px">Schedule to Week</div>
+          <div style="font-size:11px;color:var(--muted);background:var(--bg);border-radius:9px;padding:6px 10px;line-height:1.45;max-width:360px">${item.idea.slice(0,120)}</div>
+        </div>
+        <button class="btn light sm" onclick="document.getElementById('slot-picker-modal').remove()" style="flex-shrink:0;margin-left:10px">✕</button>
+      </div>
+      ${weeksHtml}
+    </div>`
+  m.addEventListener('click', e=>{ if(e.target===m) m.remove() })
+  document.body.appendChild(m)
+}
+
+// Called from Schedule Mode empty slot — pick an inbox idea to fill it
+function openInboxPicker(dateStr, pillar) {
+  document.getElementById('inbox-picker-modal')?.remove()
+  const def = SLOT_DEFS.find(d=>d.pillar===pillar)
+
+  const itemsHtml = S.inbox.length
+    ? S.inbox.map(item => {
+        const pillarKey = LABELS[item.pillar] || 'obs'
+        const safeIdea  = item.idea.replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        return `<div onclick="scheduleFromInbox(${item.id},'${dateStr}','${pillar}');document.getElementById('inbox-picker-modal')?.remove()"
+          style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:var(--bg);cursor:pointer;border:1.5px solid transparent;transition:border-color .12s;margin-bottom:6px"
+          onmouseover="this.style.borderColor='var(--text)'" onmouseout="this.style.borderColor='transparent'">
+          <div style="width:32px;height:32px;border-radius:10px;background:${pillarKey==='obs'?'var(--yellow-t)':pillarKey==='exp'?'var(--pink-t)':'var(--blue-t)'};display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${ICONS[pillarKey]||'✦'}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;font-weight:600;line-height:1.35">${safeIdea}</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px">${item.source||'—'} · ${item.format||'Text Post'} · ${item.pillar||''}</div>
+          </div>
+          ${prio(item.priority||3)}
+        </div>`
+      }).join('')
+    : emptyState('✦','Inbox is empty — add ideas first')
+
+  const m = document.createElement('div')
+  m.id = 'inbox-picker-modal'
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px'
+  m.innerHTML = `
+    <div style="background:#fff;border-radius:22px;padding:26px;width:500px;max-height:82vh;overflow-y:auto;box-shadow:0 12px 50px rgba(0,0,0,.2)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="font-size:16px;font-weight:800;letter-spacing:-.03em">Pick from Inbox</div>
+        <button class="btn light sm" onclick="document.getElementById('inbox-picker-modal').remove()">✕</button>
+      </div>
+      <div style="font-size:11px;margin-bottom:16px;display:flex;align-items:center;gap:7px">
+        <span style="width:10px;height:10px;border-radius:3px;background:${def?.color||'var(--bg)'};display:inline-block"></span>
+        <span style="color:var(--muted)">Scheduling to</span>
+        <strong>${def?.label||''} ${fmtDate(dateStr)} · ${def?.pillarLabel||''}</strong>
+      </div>
+      <div>${itemsHtml}</div>
+      <div style="padding-top:12px;border-top:1.5px solid var(--border)">
+        <div class="btn light sm" style="width:100%;justify-content:center" onclick="document.getElementById('inbox-picker-modal').remove();quickScheduleSlot('${dateStr}','${pillar}')">+ Create new draft from scratch instead</div>
+      </div>
+    </div>`
+  m.addEventListener('click', e=>{ if(e.target===m) m.remove() })
+  document.body.appendChild(m)
+}
+
+// Core action: create a scheduled pipeline item from an inbox idea
+async function scheduleFromInbox(inboxId, dateStr, pillarKey) {
+  const item = S.inbox.find(i=>i.id===inboxId)
+  if(!item) return
+  // pillarKey is already 'obs'/'find'/'exp' (from SLOT_DEFS or passed directly)
+  // But inbox stores 'Observation'/'Utility'/'Experiment' — normalise
+  const finalPillar = ['obs','find','exp'].includes(pillarKey) ? pillarKey : (LABELS[pillarKey]||'obs')
+  const { error } = await sb.from('pipeline').insert({
+    title:          item.idea.slice(0,120),
+    pillar:         finalPillar,
+    stage:          'scheduled',
+    format:         item.format || 'Text Post',
+    scheduled_date: dateStr,
+    priority:       item.priority || 3,
+    draft_content:  ''
+  })
+  if(error) { toast('Error: '+error.message); return }
+  document.getElementById('slot-picker-modal')?.remove()
+  document.getElementById('inbox-picker-modal')?.remove()
+  toast(`Scheduled for ${fmtDate(dateStr)} ✓ — open Pipeline to write the draft`)
+  await loadAll()
+  renderInbox(); renderSchedule(); renderPipeline(); renderDashboard(); renderSidebar()
 }
 
 /* ─── PIPELINE EDIT MODAL ─── */
