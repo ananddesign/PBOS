@@ -179,6 +179,8 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .kcard-date{font-size:9px;color:var(--muted);margin-left:auto;font-family:var(--mono)}
 .kcard.scheduled{border-color:rgba(233,217,76,.5);background:rgba(233,217,76,.07)}
 .kcard.repurpose{border-color:rgba(242,184,198,.5);background:rgba(242,184,198,.07)}
+.kcard-posting{border-color:rgba(78,205,196,.6)!important;background:rgba(78,205,196,.08)!important;animation:posting-pulse 1.8s ease-in-out infinite}
+@keyframes posting-pulse{0%,100%{opacity:.7}50%{opacity:1}}
 .cal-view-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .cv-dh{font-size:9px;font-weight:600;color:var(--muted);text-align:center;padding:5px 0;text-transform:uppercase;letter-spacing:.05em}
 .cv-d{background:#fff;border-radius:12px;padding:7px;min-height:80px;cursor:pointer;border:1.5px solid transparent}
@@ -699,11 +701,21 @@ function renderInbox() {
 
 /* ─── PIPELINE ─── */
 function renderPipeline() {
-  const stages = ['inbox','exploring','drafting','ready','scheduled','posted','repurpose']
+  const stages = ['inbox','exploring','drafting','ready','scheduled','posting','posted','repurpose']
+  const stuckItems = S.pipeline.filter(p=>p.stage==='posting')
+  const stuckBanner = stuckItems.length
+    ? `<div style="background:var(--yellow);border-radius:14px;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600">
+        <span>⚠ ${stuckItems.length} post${stuckItems.length>1?'s':''} stuck in "posting" — Make.com likely got a 422 duplicate error</span>
+        <div style="display:flex;gap:7px">
+          <div class="btn light sm" onclick="recoverStuck('posted')">Mark as Posted</div>
+          <div class="btn light sm" onclick="recoverStuck('scheduled')">Revert to Scheduled</div>
+        </div>
+      </div>`
+    : ''
   const cols = stages.map(stage=>{
     const cards = S.pipeline.filter(p=>p.stage===stage)
     const html = cards.map(c=>{
-      const cls = `kcard${stage==='scheduled'?' scheduled':stage==='repurpose'?' repurpose':''}`
+      const cls = `kcard${stage==='scheduled'?' scheduled':stage==='repurpose'?' repurpose':stage==='posting'?' kcard-posting':''}`
       const opacity = stage==='posted' ? ' style="opacity:.5"' : ''
       const hasDraft = c.draft_content ? '<span style="font-size:8px;color:var(--muted);font-family:var(--mono)">✎ draft</span>' : ''
       return `<div class="${cls}"${opacity} onclick="openPipelineEdit(${c.id})" style="cursor:pointer">
@@ -726,6 +738,7 @@ function renderPipeline() {
       <div><div class="sh-title">Editorial Pipeline</div><div class="sh-sub">Kanban · click any card to edit draft</div></div>
       <div class="btn dark sm" onclick="openNewPipelineItem()">+ New Draft</div>
     </div>
+    ${stuckBanner}
     <div class="kanban">${cols}</div>`
 }
 
@@ -1340,25 +1353,51 @@ async function postItemNow(id) {
 }
 
 async function _firePost(item, slot, how) {
+  // ── Guard: never double-fire ──────────────────────────────────────────────
+  if(item.stage === 'posting' || item.stage === 'posted') {
+    toast('This post is already in flight or was posted — skipping')
+    return
+  }
+
+  // ── Step 1: Lock the item BEFORE calling the webhook ─────────────────────
+  // This prevents Make.com retries, double-clicks, and the scheduler
+  // from firing the same post a second time.
+  const { error: lockErr } = await sb.from('pipeline')
+    .update({ stage:'posting' }).eq('id', item.id).eq('stage', item.stage)
+  if(lockErr) { toast('Could not lock item — aborting to avoid duplicate'); return }
+
   toast(`Posting: ${item.title.slice(0,40)}…`)
   try {
     const res = await fetch(slot.webhook, {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ text: item.draft_content, title: item.title, pillar: item.pillar })
+      body: JSON.stringify({ text: item.draft_content, title: item.title, pillar: item.pillar, id: item.id })
     })
-    if(!res.ok) throw new Error('HTTP '+res.status)
-    // mark as posted in Supabase
+
+    // ── Step 2: Handle LinkedIn 422 "duplicate content" ───────────────────
+    // 422 means LinkedIn already received this exact post (Make.com retried
+    // after a network hiccup). Treat it as success — the post IS live.
+    const isDuplicate = !res.ok && res.status === 422
+    if(!res.ok && !isDuplicate) throw new Error('HTTP '+res.status)
+
+    // ── Step 3: Mark as posted ────────────────────────────────────────────
     await sb.from('pipeline').update({ stage:'posted' }).eq('id', item.id)
-    // log to history
+
+    // ── Step 4: Log to history ────────────────────────────────────────────
     const hist = JSON.parse(localStorage.getItem('pbos_post_hist')||'[]')
-    hist.unshift({ time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}), title: item.title, icon: ICONS[item.pillar]||'✦', how })
+    hist.unshift({
+      time: new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+      title: item.title, icon: ICONS[item.pillar]||'✦', how: isDuplicate ? how+' (dup→ok)' : how
+    })
     localStorage.setItem('pbos_post_hist', JSON.stringify(hist.slice(0,20)))
-    toast(`Posted to LinkedIn ✓`)
+    toast(isDuplicate ? 'Already on LinkedIn — marked as posted ✓' : 'Posted to LinkedIn ✓')
     await loadAll()
     renderSchedule(); renderPipeline(); renderDashboard(); renderSidebar()
+
   } catch(e) {
     console.error('Post error:', e)
-    toast('Post failed: '+e.message)
+    // ── Step 5: Revert lock so user can retry ─────────────────────────────
+    await sb.from('pipeline').update({ stage:'scheduled' }).eq('id', item.id)
+    toast('Post failed: '+e.message+' — item unlocked, try again')
   }
 }
 
@@ -1386,7 +1425,7 @@ async function checkSchedule() {
 
     const pillarKey = { mon:'find', wed:'exp', fri:'obs' }[slot.id]
     const item = S.pipeline.find(p =>
-      p.stage === 'scheduled' &&
+      p.stage === 'scheduled' &&   // never re-fire posting/posted
       p.pillar === pillarKey &&
       p.draft_content &&
       p.scheduled_date && p.scheduled_date <= todayStr
@@ -1400,6 +1439,21 @@ function copyCode(el) {
   navigator.clipboard.writeText(el.textContent).catch(()=>{})
   const orig = el.textContent; el.textContent = 'Copied!'
   setTimeout(()=>el.textContent=orig, 1200)
+}
+
+async function recoverStuck(targetStage) {
+  const stuckIds = S.pipeline.filter(p=>p.stage==='posting').map(p=>p.id)
+  if(!stuckIds.length) return
+  const msg = targetStage === 'posted'
+    ? 'Mark all stuck items as Posted? (use this if the post IS live on LinkedIn)'
+    : 'Revert all stuck items to Scheduled? (use this if the post did NOT go through)'
+  if(!confirm(msg)) return
+  for(const id of stuckIds) {
+    await sb.from('pipeline').update({ stage: targetStage }).eq('id', id)
+  }
+  toast(`${stuckIds.length} item${stuckIds.length>1?'s':''} → ${targetStage} ✓`)
+  await loadAll()
+  renderPipeline(); renderDashboard(); renderSidebar(); renderSchedule()
 }
 
 async function markPosted(id) {
