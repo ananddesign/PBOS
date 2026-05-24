@@ -203,7 +203,8 @@ body{background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 .fg{margin-bottom:13px}
 .fl{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
 textarea.fi{resize:vertical;min-height:80px;line-height:1.55}
-.draft-out{background:var(--bg);border-radius:12px;padding:14px;font-size:12px;line-height:1.75;min-height:170px;white-space:pre-wrap;font-weight:500;border:1.5px solid var(--border)}
+.draft-out{background:var(--bg);border-radius:12px;padding:14px;font-size:12px;line-height:1.75;min-height:170px;white-space:pre-wrap;font-weight:500;border:1.5px solid var(--border);transition:border-color .14s}
+.draft-out:hover{border-color:#ccc}.draft-out:focus{border-color:var(--text);background:#fff}
 .draft-hook{font-weight:800;font-size:13px;display:block;margin-bottom:8px;letter-spacing:-.02em}
 .ld{display:inline-flex;gap:5px;align-items:center}
 .ldd{width:6px;height:6px;border-radius:50%;background:var(--text);animation:pulse 1.2s ease-in-out infinite}
@@ -653,8 +654,9 @@ function renderPipeline() {
     const html = cards.map(c=>{
       const cls = `kcard${stage==='scheduled'?' scheduled':stage==='repurpose'?' repurpose':''}`
       const opacity = stage==='posted' ? ' style="opacity:.5"' : ''
-      return `<div class="${cls}"${opacity}>
-        <div style="margin-bottom:5px">${pill(c.pillar)}</div>
+      const hasDraft = c.draft_content ? '<span style="font-size:8px;color:var(--muted);font-family:var(--mono)">✎ draft</span>' : ''
+      return `<div class="${cls}"${opacity} onclick="openPipelineEdit(${c.id})" style="cursor:pointer">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">${pill(c.pillar)}${hasDraft}</div>
         <div class="kcard-title">${c.title}</div>
         <div class="kcard-meta">
           ${c.format?`<span class="kcard-fmt">${c.format}</span>`:''}
@@ -669,7 +671,10 @@ function renderPipeline() {
     </div>`
   }).join('')
   document.getElementById('view-pipeline').innerHTML = `
-    <div class="sh"><div><div class="sh-title">Editorial Pipeline</div><div class="sh-sub">Kanban · idea to posted</div></div></div>
+    <div class="sh">
+      <div><div class="sh-title">Editorial Pipeline</div><div class="sh-sub">Kanban · click any card to edit draft</div></div>
+      <div class="btn dark sm" onclick="openNewPipelineItem()">+ New Draft</div>
+    </div>
     <div class="kanban">${cols}</div>`
 }
 
@@ -764,9 +769,9 @@ function renderDraft() {
         </div>
       </div>
       <div class="ai-panel">
-        <div class="ai-ph"><div><div class="ai-lab">Output</div><div class="ai-title">LinkedIn Draft</div></div><div style="display:flex;gap:6px"><div class="btn light sm" onclick="copyDraft()">Copy</div><button class="btn dark sm" id="li-post-btn" onclick="postFromDraft()">Post to LinkedIn</button></div></div>
+        <div class="ai-ph"><div><div class="ai-lab">Output</div><div class="ai-title">LinkedIn Draft</div></div><div style="display:flex;gap:6px"><div class="btn light sm" onclick="copyDraft()">Copy</div><div class="btn light sm" onclick="saveDraftToPipeline()">Save to Pipeline</div><button class="btn dark sm" id="li-post-btn" onclick="postFromDraft()">Post to LinkedIn</button></div></div>
         <div class="ai-pb">
-          <div class="draft-out" id="draft-out"><span style="color:var(--muted);font-family:var(--mono);font-size:11px">← Fill in your idea and hit Generate.</span></div>
+          <div class="draft-out" id="draft-out" contenteditable="true" spellcheck="true" style="outline:none;cursor:text"><span style="color:var(--muted);font-family:var(--mono);font-size:11px">← Fill in your idea and hit Generate.</span></div>
           <div style="margin-top:12px;padding-top:12px;border-top:1.5px solid var(--border)">
             <div class="fl" style="margin-bottom:5px">Suggested posting day</div>
             <div style="font-family:var(--mono);font-size:12px;font-weight:600" id="post-day">—</div>
@@ -870,10 +875,11 @@ async function postFromDraft() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text })
     })
-    if(!res.ok) throw new Error(res.status)
+    if(!res.ok) throw new Error('HTTP ' + res.status)
     toast('Posted to LinkedIn ✓')
   } catch(e) {
-    toast('Post failed — check webhook URL')
+    console.error('LinkedIn post error:', e)
+    toast('Failed: ' + e.message + ' — check console')
   }
   if(btn) { btn.disabled = false; btn.textContent = 'Post to LinkedIn' }
 }
@@ -958,6 +964,7 @@ function renderSettings() {
         </div>
         <div style="display:flex;gap:7px">
           <button class="btn dark sm" style="flex:1;justify-content:center" onclick="saveSettingsWebhook()">Save webhook</button>
+          ${WEBHOOK_URL ? `<button class="btn light sm" onclick="testWebhook()">Test ping</button>` : ''}
           ${WEBHOOK_URL ? `<button class="btn light sm" onclick="disconnectSettingsWebhook()" style="color:#c00;border-color:#fcc">Disconnect</button>` : ''}
         </div>
       </div>
@@ -992,6 +999,23 @@ async function saveSettingsWebhook() {
   toast('LinkedIn webhook saved ✓')
 }
 
+async function testWebhook() {
+  if(!WEBHOOK_URL) { toast('No webhook URL saved'); return }
+  toast('Sending test ping...')
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: '🧪 Test ping from Brand OS — if you see this in Make.com, the webhook is working!' })
+    })
+    if(!res.ok) throw new Error('HTTP ' + res.status)
+    toast('Test ping sent ✓ — check Make.com history')
+  } catch(e) {
+    console.error('Webhook test error:', e)
+    toast('Ping failed: ' + e.message + ' — check console')
+  }
+}
+
 function disconnectSettingsWebhook() {
   WEBHOOK_URL = ''
   localStorage.removeItem('pbos_webhook')
@@ -1010,6 +1034,126 @@ async function saveProfile() {
   renderSidebar()
   renderDashboard()
   toast('Profile saved ✓')
+}
+
+/* ─── PIPELINE EDIT MODAL ─── */
+function openPipelineEdit(id) {
+  const item = S.pipeline.find(p=>p.id===id)
+  if(!item) return
+  _showPipelineModal(item)
+}
+
+function openNewPipelineItem() {
+  _showPipelineModal({ id:null, title:'', pillar:'obs', stage:'drafting', format:'Text Post', draft_content:'', scheduled_date:'', priority:3 })
+}
+
+function _showPipelineModal(item) {
+  document.getElementById('edit-modal')?.remove()
+  const stageOpts = ['inbox','exploring','drafting','ready','scheduled','posted','repurpose']
+    .map(s=>`<option value="${s}" ${item.stage===s?'selected':''}>${s}</option>`).join('')
+  const pillarOpts = [['obs','Observation'],['find','Utility'],['exp','Experiment']]
+    .map(([v,l])=>`<option value="${v}" ${item.pillar===v?'selected':''}>${l}</option>`).join('')
+  const fmtOpts = ['Text Post','Carousel','Screenshot Commentary','Breakdown','Mini Thread']
+    .map(f=>`<option ${item.format===f?'selected':''}>${f}</option>`).join('')
+  const safeContent = (item.draft_content||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  const safeTitle = (item.title||'').replace(/"/g,'&quot;')
+
+  const m = document.createElement('div')
+  m.id = 'edit-modal'
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px'
+  m.innerHTML = `
+    <div style="background:#fff;border-radius:22px;padding:28px;width:660px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 50px rgba(0,0,0,.2)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div style="font-size:16px;font-weight:800;letter-spacing:-.03em">${item.id?'Edit Draft':'New Draft'}</div>
+        <button class="btn light sm" onclick="document.getElementById('edit-modal').remove()">✕</button>
+      </div>
+      <div class="fg">
+        <div class="fl">Title / Hook</div>
+        <input class="fi" id="em-title" value="${safeTitle}" placeholder="Post title or first line hook..."/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:13px">
+        <div><div class="fl">Pillar</div><select class="fsel" id="em-pillar" style="width:100%">${pillarOpts}</select></div>
+        <div><div class="fl">Stage</div><select class="fsel" id="em-stage" style="width:100%">${stageOpts}</select></div>
+        <div><div class="fl">Format</div><select class="fsel" id="em-format" style="width:100%">${fmtOpts}</select></div>
+      </div>
+      <div class="fg">
+        <div class="fl" style="margin-bottom:6px">LinkedIn Draft</div>
+        <textarea class="fi" id="em-content" rows="14" placeholder="Write your full LinkedIn post here..." style="line-height:1.7;resize:vertical;font-weight:400">${safeContent}</textarea>
+        <div style="display:flex;justify-content:space-between;margin-top:5px">
+          <span style="font-size:9px;color:var(--muted);font-family:var(--mono)" id="em-char-count">0 chars</span>
+          <span style="font-size:9px;color:var(--muted)">LinkedIn limit: 3000 chars</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        <div><div class="fl">Scheduled Date</div><input class="fi" id="em-date" type="date" value="${item.scheduled_date||''}"/></div>
+        <div><div class="fl">Priority (1–5)</div><input class="fi" id="em-priority" type="number" min="1" max="5" value="${item.priority||3}"/></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        ${item.id?`<button class="btn light sm" style="color:#b00;border-color:#fcc" onclick="deletePipelineItem(${item.id})">Delete</button>`:'<div></div>'}
+        <div style="display:flex;gap:8px">
+          <button class="btn light sm" onclick="document.getElementById('edit-modal').remove()">Cancel</button>
+          <button class="btn dark sm" onclick="savePipelineEdit(${item.id||'null'})">Save Draft</button>
+        </div>
+      </div>
+    </div>`
+  m.addEventListener('click', e=>{ if(e.target===m) m.remove() })
+  document.body.appendChild(m)
+  document.getElementById('em-title').focus()
+  // char counter
+  const ta = document.getElementById('em-content')
+  const counter = document.getElementById('em-char-count')
+  const updateCount = ()=>{ counter.textContent = ta.value.length+' chars'; counter.style.color = ta.value.length>3000?'#b00':'var(--muted)' }
+  ta.addEventListener('input', updateCount)
+  updateCount()
+}
+
+async function savePipelineEdit(id) {
+  const title          = document.getElementById('em-title')?.value.trim()
+  const pillar         = document.getElementById('em-pillar')?.value
+  const stage          = document.getElementById('em-stage')?.value
+  const format         = document.getElementById('em-format')?.value
+  const draft_content  = document.getElementById('em-content')?.value
+  const scheduled_date = document.getElementById('em-date')?.value || null
+  const priority       = parseInt(document.getElementById('em-priority')?.value)||3
+  if(!title) { toast('Title is required'); return }
+  let error
+  if(id) {
+    ;({ error } = await sb.from('pipeline').update({ title, pillar, stage, format, draft_content, scheduled_date, priority }).eq('id', id))
+  } else {
+    ;({ error } = await sb.from('pipeline').insert({ title, pillar, stage, format, draft_content, scheduled_date, priority }))
+  }
+  if(error) { toast('Error: '+error.message); return }
+  document.getElementById('edit-modal')?.remove()
+  toast(id ? 'Draft saved ✓' : 'Draft created ✓')
+  await loadAll()
+  renderPipeline(); renderDashboard(); renderSidebar()
+}
+
+async function deletePipelineItem(id) {
+  if(!confirm('Delete this pipeline item?')) return
+  const { error } = await sb.from('pipeline').delete().eq('id', id)
+  if(error) { toast('Error: '+error.message); return }
+  document.getElementById('edit-modal')?.remove()
+  toast('Deleted')
+  await loadAll()
+  renderPipeline(); renderDashboard(); renderSidebar()
+}
+
+async function saveDraftToPipeline() {
+  const idea          = document.getElementById('draft-idea')?.value.trim()
+  const pillarRaw     = document.getElementById('draft-pillar')?.value || 'observation'
+  const format        = document.getElementById('draft-format')?.value || 'Text Post'
+  const draft_content = document.getElementById('draft-out')?.innerText || ''
+  if(!draft_content || draft_content.includes('← Fill in')) { toast('Generate a draft first'); return }
+  const pillarMap = { observation:'obs', find:'find', experiment:'exp' }
+  const title = idea || draft_content.split('\n')[0].replace(/[^\w\s,.:!?-]/g,'').trim().slice(0,80)
+  const { error } = await sb.from('pipeline').insert({
+    title, pillar: pillarMap[pillarRaw]||'obs', stage:'drafting', format, draft_content
+  })
+  if(error) { toast('Error: '+error.message); return }
+  toast('Saved to pipeline ✓')
+  await loadAll()
+  renderPipeline(); renderDashboard(); renderSidebar()
 }
 
 /* ─── INIT ─── */
